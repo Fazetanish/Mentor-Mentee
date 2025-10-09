@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, CheckCircle } from 'lucide-react';
 import axios from 'axios';
+import {Toaster , toast} from "react-hot-toast";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: ''
+    userType: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,17 +21,22 @@ export default function SignUpPage() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    if (!agreeToTerms) {
-      alert('Please agree to the terms and conditions');
-      return;
-    }
     console.log('Sign up attempted with:', formData);
-    axios.post()
+    const res = await axios.post("http://localhost:3000/user/signup" , {
+      name : formData.fullName,
+      email : formData.email,
+      password : formData.password,
+      role : formData.userType.toLowerCase()
+    });
+
+    alert(res.data.message);
+    console.log(res.data.error);
+    
   };
 
   const passwordStrength = () => {
