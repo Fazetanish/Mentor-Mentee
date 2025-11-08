@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, CheckCircle } from 'lucide-react';
 import axios from 'axios';
-import {Toaster , toast} from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -13,6 +14,7 @@ export default function SignUpPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -37,6 +39,7 @@ export default function SignUpPage() {
     alert(res.data.message);
     console.log(res.data.error);
     
+    navigate('/student-profiles')
   };
 
   const passwordStrength = () => {

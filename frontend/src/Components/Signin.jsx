@@ -1,18 +1,29 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import {z} from 'zod';
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Sign in attempted with:', { email, password, rememberMe });
-    alert('Sign in functionality would be implemented here!');
+    console.log('Sign in attempted with:', { email, password });
+    
+    const res = await axios.post("http://localhost:3000/user/signin" , {
+      email : email,
+      password : password
+    });
+
+    console.log(res.data);
+    localStorage.setItem('authToken' , res.data.token);
+
+    alert(res.data.message);
   };
 
   return (
@@ -67,21 +78,6 @@ export default function SignInPage() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                />
-                <span className="text-sm text-gray-700">Remember me</span>
-              </label>
-              <button className="text-sm text-purple-600 hover:text-purple-700 font-medium transition">
-                Forgot password?
-              </button>
             </div>
 
             <button
