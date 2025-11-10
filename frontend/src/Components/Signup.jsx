@@ -2,6 +2,19 @@ import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {z} from 'zod';
+
+const requiredBody = z.object({
+  fullName : z.string().min(2).max(50),
+  email : z.email("Invalid email format").refine(
+            (email) =>
+                email.endsWith("@muj.manipal.edu") ||
+                email.endsWith("@jaipur.manipal.edu"),
+            "Email must be a valid Manipal University address"
+            ),
+  password : z.string().min(8).max(100),
+  role : z.enum(["student" , "teacher"])
+});
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -29,6 +42,20 @@ export default function SignUpPage() {
       return;
     }
     console.log('Sign up attempted with:', formData);
+
+    const result = requiredBody.safeParse({
+      fullName : formData.fullName,
+      email : formData.email,
+      password : formData.password,
+      role : formData.userType.toLowerCase()
+    });
+
+    if(!result.success){
+      alert(result.error.issues[0].message);
+
+      return;
+    }
+
     const res = await axios.post("http://localhost:3000/user/signup" , {
       name : formData.fullName,
       email : formData.email,
