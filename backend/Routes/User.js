@@ -19,7 +19,12 @@ UserRouter.use(express.json());
 UserRouter.post("/signup" ,async function(req,res){
     const requiredBody = z.object({
         name : z.string().min(2).max(50),
-        email : z.email(),
+        email : z.email("Invalid email format").refine(
+            (email) =>
+                email.endsWith("@muj.manipal.edu") ||
+                email.endsWith("@jaipur.manipal.edu"),
+            "Email must be a valid Manipal University address"
+            ),
         role : z.enum(["student" , "teacher"]),
         password: z.string().min(8).max(100)
     })
@@ -59,9 +64,15 @@ UserRouter.post("/signup" ,async function(req,res){
 
 UserRouter.post("/signin" ,async function(req , res){
     const requiredBody = z.object({
-        email : z.email(),
-        password : z.string().min(8).max(100)
-    })
+        email: z.email("Invalid email format").refine(
+            (email) =>
+                email.endsWith("@muj.manipal.edu") ||
+                email.endsWith("@jaipur.manipal.edu"),
+            "Email must be a valid Manipal University address"
+            ),
+            
+        password: z.string().min(8).max(100),
+    });
 
     const parsedBody = requiredBody.safeParse(req.body)
     if(!parsedBody.success){

@@ -4,6 +4,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {z} from 'zod';
 
+const requiredBody = z.object({
+  email: z.email("Invalid email format").refine(
+      (email) =>
+        email.endsWith("@muj.manipal.edu") ||
+        email.endsWith("@jaipur.manipal.edu"),
+      "Email must be a valid Manipal University address"
+    ),
+    
+  password: z.string().min(8).max(100),
+});
+
 export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +25,17 @@ export default function SignInPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Sign in attempted with:', { email, password });
+
+    const result = requiredBody.safeParse({
+      email : email,
+      password : password
+    })
+
+    if(!result.success){
+      alert(result.error.issues[0].message);
+
+      return;
+    }
     
     const res = await axios.post("http://localhost:3000/user/signin" , {
       email : email,
