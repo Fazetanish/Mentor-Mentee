@@ -5,7 +5,8 @@ import SignInPage from './Components/Signin'
 import SignUpPage from './Components/Signup'
 import { BrowserRouter as Router , Routes , Route } from 'react-router-dom'
 import StudentProfileForm from './Components/Student_Profiles'
-import MentorConnectLandingPage from './Components/Landing_Page'
+import MentorConnectDashboard from './Components/Student_LandingPage'
+
 
 function App(){
   return <>
@@ -15,7 +16,7 @@ function App(){
         <Route path='/signin' element = {<SignInPage /> } />
         <Route path='/signup' element = {<SignUpPage />} />
         <Route path='/student-profiles' element={<StudentProfileForm />} />
-        <Route path='/landing-page' element ={<MentorConnectLandingPage />} />
+        <Route path='/student-landing-page' element ={<MentorConnectDashboard />} />
       </Routes>
     </Router>
   </>

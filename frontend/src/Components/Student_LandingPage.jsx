@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin } from 'lucide-react';
 
-export default function MentorConnectLandingPage() {
+export default function MentorConnectDashboard() {
   const [activeTab, setActiveTab] = useState('browse');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDomain, setFilterDomain] = useState('all');
   const [filterCapacity, setFilterCapacity] = useState('all');
 
   const studentProfile = {
-    name: "Arjun Sharma",
-    id: "CSE2021045",
+    name: "Tanish Iyer",
+    id: "23FE10CSE00534",
     year: "3rd Year",
     cgpa: "8.7",
     skills: ["Python", "React", "Machine Learning", "Django"],
     interests: ["AI/ML", "Web Development", "Data Science"],
-    github: "github.com/arjunsharma"
+    github: "github.com/tanishiyer"
   };
 
   const mentorRequests = [

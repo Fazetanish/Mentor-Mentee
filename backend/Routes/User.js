@@ -101,7 +101,8 @@ UserRouter.post("/signin" ,async function(req , res){
 
     const token = jwt.sign({
         email : email,
-        id : user._id
+        id : user._id,
+        role : user.role
     } , JWT_Secret_User);
 
     return res.json({
