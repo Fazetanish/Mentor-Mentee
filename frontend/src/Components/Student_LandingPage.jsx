@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function MentorConnectDashboard() {
   const [activeTab, setActiveTab] = useState('browse');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDomain, setFilterDomain] = useState('all');
   const [filterCapacity, setFilterCapacity] = useState('all');
+  const navigate = useNavigate();
 
   const studentProfile = {
     name: "Tanish Iyer",
@@ -145,7 +147,7 @@ export default function MentorConnectDashboard() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md">
+              <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md" onClick={()=>navigate('/project-request')}>
                 <Plus className="w-4 h-4 inline mr-2" />
                 New Request
               </button>

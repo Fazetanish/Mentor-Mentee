@@ -45,7 +45,7 @@ export default function SignInPage() {
     console.log(res.data);
     localStorage.setItem('authToken' , res.data.token);
 
-    alert(res.data.message);
+    navigate('/student-landing-page')
   };
 
   return (
