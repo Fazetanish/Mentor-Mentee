@@ -38,36 +38,56 @@ export default function SignUpPage() {
 
   const handleSubmit = async () => {
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      alert("Passwords do not match!");
       return;
     }
-    console.log('Sign up attempted with:', formData);
 
     const result = requiredBody.safeParse({
-      fullName : formData.fullName,
-      email : formData.email,
-      password : formData.password,
-      role : formData.userType.toLowerCase()
+      fullName: formData.fullName,
+      email: formData.email,
+      password: formData.password,
+      role: formData.userType.toLowerCase()
     });
 
-    if(!result.success){
+    if (!result.success) {
       alert(result.error.issues[0].message);
-
       return;
     }
 
-    const res = await axios.post("http://localhost:3000/user/signup" , {
-      name : formData.fullName,
-      email : formData.email,
-      password : formData.password,
-      role : formData.userType.toLowerCase()
-    });
+    try {
+      // 1️⃣ SIGNUP
+      const signupRes = await axios.post(
+        "http://localhost:3000/user/signup",
+        {
+          name: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          role: formData.userType.toLowerCase()
+        }
+      );
 
-    alert(res.data.message);
-    console.log(res.data.error);
-    
-    navigate('/student-profiles')
+      console.log("Signup success:", signupRes.data.message);
+
+      // 2️⃣ AUTO SIGNIN
+      const signinRes = await axios.post(
+        "http://localhost:3000/user/signin",
+        {
+          email: formData.email,
+          password: formData.password
+        }
+      );
+
+      // 3️⃣ STORE TOKEN
+      localStorage.setItem("authToken", signinRes.data.token);
+
+      // 4️⃣ NAVIGATE
+      navigate("/student-profiles");
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Something went wrong");
+    }
   };
+
 
   const passwordStrength = () => {
     const password = formData.password;

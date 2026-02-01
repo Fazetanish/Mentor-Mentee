@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { User, Hash, Calendar, BookOpen, Award, Lightbulb, X, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+
 
 export default function StudentProfileForm() {
   const [formData, setFormData] = useState({
@@ -83,26 +85,22 @@ export default function StudentProfileForm() {
 
     try {
       console.log('Student profile data:', formData);
-      // const res = await axios.post("http://localhost:3000/student/profile", formData);
+      const token = localStorage.getItem('authToken'); // or wherever you store the JWT
+      const res = await axios.post("http://localhost:3000/user/student/profile", {
+          ...formData,
+          year: parseInt(formData.year),
+          cgpa: formData.cgpa ? parseFloat(formData.cgpa) : undefined
+      }, {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
       setSuccessMessage('Student profile created successfully!');
-      
-      // Clear form after successful submission
-      setTimeout(() => {
-        setFormData({
-          registration_no: '',
-          year: '',
-          section: '',
-          cgpa: '',
-          skills: [],
-          interest: []
-        });
-      }, 2000);
-
-      navigate('/landing-page')
-    } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Something went wrong. Please try again.');
-    }
-  };
+      navigate("/student-landing-page")
+      } catch (error) {
+        setErrorMessage(error.response?.data?.message || 'Something went wrong. Please try again.');
+      }
+    };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 flex items-center justify-center p-4">
