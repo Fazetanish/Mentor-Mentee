@@ -81,7 +81,14 @@ export default function SignUpPage() {
       localStorage.setItem("authToken", signinRes.data.token);
 
       // 4️⃣ NAVIGATE
-      navigate("/student-profiles");
+      const role = formData.userType.toLowerCase();
+
+      if (role === "student") {
+        navigate("/student-profiles");
+      } else if (role === "teacher") {
+        navigate("/teacher-profiles");
+      }
+
 
     } catch (error) {
       alert(error.response?.data?.message || "Something went wrong");
