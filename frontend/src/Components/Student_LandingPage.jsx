@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:3000';
 
 export default function MentorConnectDashboard() {
   const [activeTab, setActiveTab] = useState('browse');
@@ -9,90 +12,161 @@ export default function MentorConnectDashboard() {
   const [filterCapacity, setFilterCapacity] = useState('all');
   const navigate = useNavigate();
 
-  const studentProfile = {
-    name: "Tanish Iyer",
-    id: "23FE10CSE00534",
-    year: "3rd Year",
-    cgpa: "8.7",
-    skills: ["Python", "React", "Machine Learning", "Django"],
-    interests: ["AI/ML", "Web Development", "Data Science"],
-    github: "github.com/tanishiyer"
+  // State for data from backend
+  const [studentProfile, setStudentProfile] = useState(null);
+  const [mentorRequests, setMentorRequests] = useState([]);
+  const [availableMentors, setAvailableMentors] = useState([]);
+  
+  // Loading states
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
+  const [loadingMentors, setLoadingMentors] = useState(true);
+  
+  // Error states
+  const [error, setError] = useState(null);
+
+  // Get auth token
+  const getAuthToken = () => {
+    return localStorage.getItem('authToken');
   };
 
-  const mentorRequests = [
-    {
-      id: 1,
-      mentor: "Dr. Priya Mehta",
-      project: "Predictive Analytics for Healthcare",
-      status: "pending",
-      date: "2025-10-08",
-      domain: "Machine Learning"
-    },
-    {
-      id: 2,
-      mentor: "Prof. Rajesh Kumar",
-      project: "Real-time Chat Application with WebSockets",
-      status: "approved",
-      date: "2025-10-05",
-      domain: "Web Development"
-    },
-    {
-      id: 3,
-      mentor: "Dr. Ananya Singh",
-      project: "Blockchain-based Voting System",
-      status: "changes_requested",
-      date: "2025-10-03",
-      domain: "Cybersecurity"
+  // Fetch student profile
+  const fetchStudentProfile = async () => {
+    try {
+      setLoadingProfile(true);
+      const token = getAuthToken();
+      const response = await axios.get(`${API_BASE_URL}/user/student/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.data.profile) {
+        const profile = response.data.profile;
+        setStudentProfile({
+          name: profile.user_id?.name || 'Student',
+          id: profile.registration_no,
+          year: `${profile.year}${getYearSuffix(profile.year)} Year`,
+          cgpa: profile.cgpa?.toString() || 'N/A',
+          skills: profile.skills || [],
+          interests: profile.interest || [],
+          github: profile.github || ''
+        });
+      }
+    } catch (err) {
+      console.error('Error fetching student profile:', err);
+      // If profile fetch fails, we might not have a GET endpoint yet
+      // Set a default profile or handle gracefully
+      setStudentProfile({
+        name: 'Student',
+        id: 'N/A',
+        year: 'N/A',
+        cgpa: 'N/A',
+        skills: [],
+        interests: [],
+        github: ''
+      });
+    } finally {
+      setLoadingProfile(false);
     }
-  ];
+  };
 
-  const availableMentors = [
-    {
-      id: 1,
-      name: "Dr. Priya Mehta",
-      designation: "Associate Professor",
-      domains: ["Machine Learning", "Data Science", "AI"],
-      capacity: "available",
-      projects: 3,
-      statement: "Looking for students interested in healthcare AI and predictive modeling. Strong Python and statistics background preferred."
-    },
-    {
-      id: 2,
-      name: "Prof. Rajesh Kumar",
-      designation: "Assistant Professor",
-      domains: ["Web Development", "Cloud Computing", "DevOps"],
-      capacity: "limited",
-      projects: 7,
-      statement: "Focused on modern web architectures and scalable systems. Experience with React/Node.js is a plus."
-    },
-    {
-      id: 3,
-      name: "Dr. Ananya Singh",
-      designation: "Professor",
-      domains: ["Cybersecurity", "Blockchain", "Network Security"],
-      capacity: "available",
-      projects: 2,
-      statement: "Interested in blockchain applications and cryptographic protocols. Looking for motivated students with strong problem-solving skills."
-    },
-    {
-      id: 4,
-      name: "Dr. Vikram Patel",
-      designation: "Associate Professor",
-      domains: ["Computer Vision", "Deep Learning", "AI"],
-      capacity: "full",
-      projects: 10,
-      statement: "Working on image processing and CNN architectures. Not accepting new students this semester."
-    },
-    {
-      id: 5,
-      name: "Prof. Neha Gupta",
-      designation: "Assistant Professor",
-      domains: ["Database Systems", "Big Data", "Data Engineering"],
-      capacity: "available",
-      projects: 4,
-      statement: "Focus on distributed databases and data pipeline optimization. SQL and NoSQL experience required."
+  // Fetch mentor requests for the student
+  const fetchMentorRequests = async () => {
+    try {
+      setLoadingRequests(true);
+      const token = getAuthToken();
+      const response = await axios.get(`${API_BASE_URL}/project/requests/student`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.data.requests) {
+        const formattedRequests = response.data.requests.map(request => ({
+          id: request._id,
+          mentor: request.mentor_id?.name || 'Unknown Mentor',
+          project: request.projectTitle,
+          status: request.status,
+          date: request.createdAt?.split('T')[0] || new Date().toISOString().split('T')[0],
+          domain: request.techStack?.[0] || 'General'
+        }));
+        setMentorRequests(formattedRequests);
+      }
+    } catch (err) {
+      console.error('Error fetching mentor requests:', err);
+      setMentorRequests([]);
+    } finally {
+      setLoadingRequests(false);
     }
-  ];
+  };
+
+  // Fetch available mentors
+  const fetchAvailableMentors = async () => {
+    try {
+      setLoadingMentors(true);
+      const token = getAuthToken();
+      const response = await axios.get(`${API_BASE_URL}/teacher/mentors`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.data.mentors) {
+        const formattedMentors = response.data.mentors.map(mentor => ({
+          id: mentor._id,
+          name: mentor.user_id?.name || 'Unknown',
+          designation: mentor.designation || 'Faculty',
+          domains: [...(mentor.skills || []), ...(mentor.interest || [])],
+          capacity: mapCapacity(mentor.capacity),
+          projects: mentor.currentProjects || 0,
+          statement: mentor.statement || `Expert in ${(mentor.skills || []).join(', ')}. Looking for motivated students.`,
+          email: mentor.user_id?.email || ''
+        }));
+        setAvailableMentors(formattedMentors);
+      }
+    } catch (err) {
+      console.error('Error fetching mentors:', err);
+      setAvailableMentors([]);
+    } finally {
+      setLoadingMentors(false);
+    }
+  };
+
+  // Helper function to map capacity values
+  const mapCapacity = (capacity) => {
+    switch (capacity) {
+      case 'available':
+        return 'available';
+      case 'limited slots':
+        return 'limited';
+      case 'full':
+        return 'full';
+      default:
+        return 'available';
+    }
+  };
+
+  // Helper function for year suffix
+  const getYearSuffix = (year) => {
+    if (year === 1) return 'st';
+    if (year === 2) return 'nd';
+    if (year === 3) return 'rd';
+    return 'th';
+  };
+
+  // Fetch all data on component mount
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      navigate('/signin');
+      return;
+    }
+    
+    fetchStudentProfile();
+    fetchMentorRequests();
+    fetchAvailableMentors();
+  }, [navigate]);
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -131,6 +205,23 @@ export default function MentorConnectDashboard() {
     return matchesSearch && matchesDomain && matchesCapacity;
   });
 
+  // Get unique domains from all mentors for filter dropdown
+  const allDomains = [...new Set(availableMentors.flatMap(m => m.domains))];
+
+  // Loading state
+  const isLoading = loadingProfile || loadingRequests || loadingMentors;
+
+  if (isLoading && !studentProfile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
@@ -153,11 +244,11 @@ export default function MentorConnectDashboard() {
               </button>
               <div className="flex items-center space-x-3">
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">{studentProfile.name}</p>
-                  <p className="text-xs text-gray-500">{studentProfile.id}</p>
+                  <p className="text-sm font-semibold text-gray-900">{studentProfile?.name || 'Student'}</p>
+                  <p className="text-xs text-gray-500">{studentProfile?.id || 'N/A'}</p>
                 </div>
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  {studentProfile.name.split(' ').map(n => n[0]).join('')}
+                  {(studentProfile?.name || 'S').split(' ').map(n => n[0]).join('')}
                 </div>
               </div>
             </div>
@@ -172,7 +263,9 @@ export default function MentorConnectDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Active Requests</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">{mentorRequests.filter(r => r.status === 'pending').length}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : mentorRequests.filter(r => r.status === 'pending').length}
+                </p>
               </div>
               <div className="bg-yellow-100 p-3 rounded-lg">
                 <Clock className="w-6 h-6 text-yellow-600" />
@@ -183,7 +276,9 @@ export default function MentorConnectDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Approved</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">{mentorRequests.filter(r => r.status === 'approved').length}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : mentorRequests.filter(r => r.status === 'approved').length}
+                </p>
               </div>
               <div className="bg-green-100 p-3 rounded-lg">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -194,7 +289,9 @@ export default function MentorConnectDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Available Mentors</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">{availableMentors.filter(m => m.capacity === 'available').length}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {loadingMentors ? <Loader2 className="w-6 h-6 animate-spin" /> : availableMentors.filter(m => m.capacity === 'available').length}
+                </p>
               </div>
               <div className="bg-blue-100 p-3 rounded-lg">
                 <Users className="w-6 h-6 text-blue-600" />
@@ -205,7 +302,7 @@ export default function MentorConnectDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Your CGPA</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">{studentProfile.cgpa}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{studentProfile?.cgpa || 'N/A'}</p>
               </div>
               <div className="bg-purple-100 p-3 rounded-lg">
                 <BookOpen className="w-6 h-6 text-purple-600" />
@@ -223,21 +320,29 @@ export default function MentorConnectDashboard() {
                 <div>
                   <p className="text-sm text-gray-500 mb-2">Skills & Technologies</p>
                   <div className="flex flex-wrap gap-2">
-                    {studentProfile.skills.map((skill, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full">
-                        {skill}
-                      </span>
-                    ))}
+                    {(studentProfile?.skills || []).length > 0 ? (
+                      studentProfile.skills.map((skill, idx) => (
+                        <span key={idx} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full">
+                          {skill}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-400 text-sm">No skills added yet</span>
+                    )}
                   </div>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-2">Areas of Interest</p>
                   <div className="flex flex-wrap gap-2">
-                    {studentProfile.interests.map((interest, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-purple-50 text-purple-700 text-sm font-medium rounded-full">
-                        {interest}
-                      </span>
-                    ))}
+                    {(studentProfile?.interests || []).length > 0 ? (
+                      studentProfile.interests.map((interest, idx) => (
+                        <span key={idx} className="px-3 py-1 bg-purple-50 text-purple-700 text-sm font-medium rounded-full">
+                          {interest}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-400 text-sm">No interests added yet</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -297,10 +402,9 @@ export default function MentorConnectDashboard() {
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="all">All Domains</option>
-                  <option value="Machine Learning">Machine Learning</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="Cybersecurity">Cybersecurity</option>
-                  <option value="Data Science">Data Science</option>
+                  {allDomains.map((domain, idx) => (
+                    <option key={idx} value={domain}>{domain}</option>
+                  ))}
                 </select>
                 <select
                   value={filterCapacity}
@@ -315,82 +419,111 @@ export default function MentorConnectDashboard() {
               </div>
 
               {/* Mentor Cards */}
-              <div className="space-y-4">
-                {filteredMentors.map((mentor) => (
-                  <div key={mentor.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-start space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                          {mentor.name.split(' ').map(n => n[0]).join('')}
+              {loadingMentors ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                </div>
+              ) : filteredMentors.length === 0 ? (
+                <div className="text-center py-12">
+                  <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500">No mentors found matching your criteria.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredMentors.map((mentor) => (
+                    <div key={mentor.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                            {mentor.name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
+                            <p className="text-sm text-gray-500">{mentor.designation}</p>
+                            <p className="text-xs text-gray-400 mt-1">Currently mentoring {mentor.projects} projects</p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
-                          <p className="text-sm text-gray-500">{mentor.designation}</p>
-                          <p className="text-xs text-gray-400 mt-1">Currently mentoring {mentor.projects} projects</p>
+                        <div className="flex items-center space-x-3">
+                          {getCapacityBadge(mentor.capacity)}
+                          <button
+                            disabled={mentor.capacity === 'full'}
+                            onClick={() => navigate('/project-request', { state: { selectedMentor: mentor } })}
+                            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                              mentor.capacity === 'full'
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-blue-600 text-white hover:bg-blue-700'
+                            }`}
+                          >
+                            Send Request
+                          </button>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        {getCapacityBadge(mentor.capacity)}
-                        <button
-                          disabled={mentor.capacity === 'full'}
-                          className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            mentor.capacity === 'full'
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'bg-blue-600 text-white hover:bg-blue-700'
-                          }`}
-                        >
-                          Send Request
-                        </button>
+                      <div className="mb-3">
+                        <p className="text-sm text-gray-700">{mentor.statement}</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {mentor.domains.map((domain, idx) => (
+                          <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                            {domain}
+                          </span>
+                        ))}
                       </div>
                     </div>
-                    <div className="mb-3">
-                      <p className="text-sm text-gray-700">{mentor.statement}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {mentor.domains.map((domain, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                          {domain}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {/* My Requests Tab */}
           {activeTab === 'requests' && (
             <div className="p-6">
-              <div className="space-y-4">
-                {mentorRequests.map((request) => (
-                  <div key={request.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900">{request.project}</h3>
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full flex items-center space-x-1 ${getStatusColor(request.status)}`}>
-                            {getStatusIcon(request.status)}
-                            <span className="ml-1 capitalize">{request.status.replace('_', ' ')}</span>
-                          </span>
+              {loadingRequests ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                </div>
+              ) : mentorRequests.length === 0 ? (
+                <div className="text-center py-12">
+                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500">You haven't submitted any project requests yet.</p>
+                  <button 
+                    onClick={() => navigate('/project-request')}
+                    className="mt-4 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Submit Your First Request
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {mentorRequests.map((request) => (
+                    <div key={request.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="text-lg font-semibold text-gray-900">{request.project}</h3>
+                            <span className={`px-3 py-1 text-xs font-medium rounded-full flex items-center space-x-1 ${getStatusColor(request.status)}`}>
+                              {getStatusIcon(request.status)}
+                              <span className="ml-1 capitalize">{request.status.replace('_', ' ')}</span>
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600">Mentor: <span className="font-medium">{request.mentor}</span></p>
+                          <p className="text-xs text-gray-400 mt-1">Domain: {request.domain} • Submitted on {new Date(request.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                         </div>
-                        <p className="text-sm text-gray-600">Mentor: <span className="font-medium">{request.mentor}</span></p>
-                        <p className="text-xs text-gray-400 mt-1">Domain: {request.domain} • Submitted on {new Date(request.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                          View Details
-                        </button>
-                        {request.status === 'changes_requested' && (
-                          <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                            Resubmit
+                        <div className="flex space-x-2">
+                          <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                            View Details
                           </button>
-                        )}
+                          {request.status === 'changes_requested' && (
+                            <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                              Resubmit
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -3,7 +3,6 @@ require("dotenv").config();
 const JWT_Secret_User = process.env.JWT_Secret_User;
 
 function authJWTMiddleware(req, res, next) {
-    console.log("AUTH HEADER:", req.headers.Authorization);
 
     const token = req.headers.authorization;
     if (!token) {

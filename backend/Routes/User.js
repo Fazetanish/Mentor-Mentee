@@ -185,6 +185,37 @@ UserRouter.post("/student/profile", authJWTMiddleware, async function(req, res) 
     }
 });
 
+// Get Student Profile (own profile)
+UserRouter.get("/student/profile", authJWTMiddleware, async function(req, res) {
+    if (req.user.role !== "student") {
+        return res.status(403).json({
+            message: "Access denied"
+        });
+    }
+
+    try {
+        const profile = await Student_Profile_Model.findOne({ user_id: req.user.id })
+            .populate('user_id', 'name email');
+
+        if (!profile) {
+            return res.status(404).json({
+                message: "Profile not found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Profile fetched successfully",
+            profile: profile
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+});
+
 module.exports = ({
     UserRouter : UserRouter
 })
