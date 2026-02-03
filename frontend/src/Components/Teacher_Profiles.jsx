@@ -73,7 +73,7 @@ export default function TeacherProfileForm() {
     try {
       console.log('Teacher profile data:', formData);
       const token = localStorage.getItem('authToken');
-      const res = await axios.post("http://localhost:3000/user/teacher/profile", {
+      const res = await axios.post("http://localhost:3000/teacher/profile",{
         ...formData
       }, {
         headers: {
