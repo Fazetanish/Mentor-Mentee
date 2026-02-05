@@ -24,28 +24,44 @@ export default function SignInPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Sign in attempted with:', { email, password });
 
     const result = requiredBody.safeParse({
-      email : email,
-      password : password
-    })
-
-    if(!result.success){
-      alert(result.error.issues[0].message);
-
-      return;
-    }
-    
-    const res = await axios.post("http://localhost:3000/user/signin" , {
-      email : email,
-      password : password
+      email,
+      password
     });
 
-    console.log(res.data);
-    localStorage.setItem('authToken' , res.data.token);
+    if (!result.success) {
+      alert(result.error.issues[0].message);
+      return;
+    }
 
-    navigate('/student-landing-page')
+    try {
+      const res = await axios.post("http://localhost:3000/user/signin", {
+        email,
+        password
+      });
+
+      const { token, user } = res.data;
+
+      // Store auth info
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('userRole', user.role); // optional but useful
+
+      // Role-based redirect
+      if (user.role === 'student') {
+        navigate('/student-landing-page');
+      } 
+      else if (user.role === 'faculty' || user.role === 'teacher') {
+        navigate('/teacher-landing-page');
+      } 
+      else {
+        alert('Unknown user role');
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || 'Signin failed');
+    }
   };
 
   return (
