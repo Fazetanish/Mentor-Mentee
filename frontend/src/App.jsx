@@ -4,11 +4,12 @@ import Dashboard from './Components/Dashboard'
 import SignInPage from './Components/Signin'
 import SignUpPage from './Components/Signup'
 import { BrowserRouter as Router , Routes , Route } from 'react-router-dom'
-import StudentProfileForm from './Components/Student_Profiles'
+import StudentProfileForm from './Components/Student_ProfilesForm'
 import MentorConnectDashboard from './Components/Student_LandingPage'
 import ProjectRequestPage from './Components/Requests'
-import TeacherProfileForm from './Components/Teacher_Profiles'
+import TeacherProfileForm from './Components/Teacher_ProfilesForm'
 import TeacherLandingPage from './Components/Teacher_LandingPage'
+import StudentProfilePage from './Components/Student_Profile_Page'
 
 
 function App(){
@@ -23,6 +24,7 @@ function App(){
         <Route path='/teacher-profiles' element ={<TeacherProfileForm />} />
         <Route path='/teacher-landing-page' element={<TeacherLandingPage />} />
         <Route path='/project-request' element = {<ProjectRequestPage />} />
+        <Route path='/student-profile-page' element = {<StudentProfilePage />} />
       </Routes>
     </Router>
   </>

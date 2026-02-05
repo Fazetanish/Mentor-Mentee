@@ -247,7 +247,11 @@ export default function MentorConnectDashboard() {
                   <p className="text-sm font-semibold text-gray-900">{studentProfile?.name || 'Student'}</p>
                   <p className="text-xs text-gray-500">{studentProfile?.id || 'N/A'}</p>
                 </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full 
+                  flex items-center justify-center text-white font-semibold 
+                  cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => navigate('/student-profile-page')}
+                >
                   {(studentProfile?.name || 'S').split(' ').map(n => n[0]).join('')}
                 </div>
               </div>

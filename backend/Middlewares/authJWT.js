@@ -14,7 +14,6 @@ function authJWTMiddleware(req, res, next) {
             token.replace("Bearer ", ""),
             JWT_Secret_User
         );
-        console.log("DECODED TOKEN:", decoded);
         req.user = decoded;
         next();
     } catch (error) {

@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
-import { ArrowLeft, User, BookOpen, Code, Target, FileText, Upload, X, Check, AlertCircle, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, User, BookOpen, Code, Target, FileText, Upload, X, Check, AlertCircle, Plus, Loader2 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:3000';
 
 export default function ProjectRequestPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedMentor, setSelectedMentor] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // State for mentors from backend
+  const [availableMentors, setAvailableMentors] = useState([]);
+  const [loadingMentors, setLoadingMentors] = useState(true);
   
   const [formData, setFormData] = useState({
     projectTitle: '',
@@ -26,38 +39,74 @@ export default function ProjectRequestPage() {
     expectedOutcome: 0
   });
 
-  const availableMentors = [
-    {
-      id: 1,
-      name: "Dr. Priya Mehta",
-      designation: "Associate Professor",
-      domains: ["Machine Learning", "Data Science", "AI"],
-      capacity: "available",
-      projects: 3,
-      statement: "Looking for students interested in healthcare AI and predictive modeling. Strong Python and statistics background preferred.",
-      email: "priya.mehta@college.edu"
-    },
-    {
-      id: 2,
-      name: "Prof. Rajesh Kumar",
-      designation: "Assistant Professor",
-      domains: ["Web Development", "Cloud Computing", "DevOps"],
-      capacity: "limited",
-      projects: 7,
-      statement: "Focused on modern web architectures and scalable systems. Experience with React/Node.js is a plus.",
-      email: "rajesh.kumar@college.edu"
-    },
-    {
-      id: 3,
-      name: "Dr. Ananya Singh",
-      designation: "Professor",
-      domains: ["Cybersecurity", "Blockchain", "Network Security"],
-      capacity: "available",
-      projects: 2,
-      statement: "Interested in blockchain applications and cryptographic protocols. Looking for motivated students with strong problem-solving skills.",
-      email: "ananya.singh@college.edu"
+  // Get auth token
+  const getAuthToken = () => {
+    return localStorage.getItem('authToken');
+  };
+
+  // Fetch available mentors from backend
+  const fetchMentors = async () => {
+    try {
+      setLoadingMentors(true);
+      const token = getAuthToken();
+      const response = await axios.get(`${API_BASE_URL}/teacher/mentors`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.data.mentors) {
+        const formattedMentors = response.data.mentors
+          .filter(mentor => mentor.capacity !== 'full') // Only show mentors who can accept requests
+          .map(mentor => ({
+            id: mentor.user_id?._id || mentor._id,
+            name: mentor.user_id?.name || 'Unknown',
+            designation: mentor.designation || 'Faculty',
+            domains: [...(mentor.skills || []), ...(mentor.interest || [])],
+            capacity: mapCapacity(mentor.capacity),
+            projects: mentor.currentProjects || 0,
+            statement: mentor.statement || `Expert in ${(mentor.skills || []).join(', ')}. Looking for motivated students.`,
+            email: mentor.user_id?.email || ''
+          }));
+        setAvailableMentors(formattedMentors);
+      }
+    } catch (err) {
+      console.error('Error fetching mentors:', err);
+      setAvailableMentors([]);
+    } finally {
+      setLoadingMentors(false);
     }
-  ];
+  };
+
+  // Helper function to map capacity values
+  const mapCapacity = (capacity) => {
+    switch (capacity) {
+      case 'available':
+        return 'available';
+      case 'limited slots':
+        return 'limited';
+      case 'full':
+        return 'full';
+      default:
+        return 'available';
+    }
+  };
+
+  // Fetch mentors on mount
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      navigate('/signin');
+      return;
+    }
+    
+    fetchMentors();
+    
+    // Check if a mentor was pre-selected from the landing page
+    if (location.state?.selectedMentor) {
+      setSelectedMentor(location.state.selectedMentor);
+    }
+  }, [navigate, location.state]);
 
   const techStackOptions = [
     "Python", "JavaScript", "React", "Node.js", "Django", "Flask",
@@ -146,11 +195,45 @@ export default function ProjectRequestPage() {
     setCurrentStep(prev => prev - 1);
   };
 
-  const handleSubmit = () => {
-    if (validateStep(4)) {
-      setShowSuccess(true);
-      // Here you would normally send the data to your backend
-      console.log('Submitting:', { mentor: selectedMentor, ...formData });
+  const handleSubmit = async () => {
+    if (!validateStep(4)) return;
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const token = getAuthToken();
+      const requestData = {
+        mentor_id: selectedMentor.id,
+        projectTitle: formData.projectTitle,
+        description: formData.description,
+        teamSize: formData.teamSize,
+        methodology: formData.methodology,
+        techStack: formData.techStack,
+        objectives: formData.objectives,
+        expectedOutcome: formData.expectedOutcome,
+        duration: formData.duration,
+        additionalNotes: formData.additionalNotes
+      };
+
+      const response = await axios.post(`${API_BASE_URL}/project/request`, requestData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.requestId) {
+        setShowSuccess(true);
+      }
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      setSubmitError(
+        error.response?.data?.message || 
+        'Failed to submit request. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -182,7 +265,7 @@ export default function ProjectRequestPage() {
             </ul>
           </div>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => navigate('/student-landing-page')}
             className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"
           >
             Back to Dashboard
@@ -200,7 +283,7 @@ export default function ProjectRequestPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => window.history.back()}
+                onClick={() => navigate('/student-landing-page')}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5 text-gray-600" />
@@ -262,48 +345,59 @@ export default function ProjectRequestPage() {
                 </div>
               )}
 
-              <div className="space-y-4">
-                {availableMentors.map((mentor) => (
-                  <div
-                    key={mentor.id}
-                    onClick={() => setSelectedMentor(mentor)}
-                    className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
-                      selectedMentor?.id === mentor.id
-                        ? 'border-blue-600 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-start space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                          {mentor.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
-                          <p className="text-sm text-gray-500">{mentor.designation}</p>
-                          <p className="text-xs text-gray-400 mt-1">Currently mentoring {mentor.projects} projects</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        {getCapacityBadge(mentor.capacity)}
-                        {selectedMentor?.id === mentor.id && (
-                          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                            <Check className="w-4 h-4 text-white" />
+              {loadingMentors ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                </div>
+              ) : availableMentors.length === 0 ? (
+                <div className="text-center py-12">
+                  <User className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500">No mentors available at the moment.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {availableMentors.map((mentor) => (
+                    <div
+                      key={mentor.id}
+                      onClick={() => setSelectedMentor(mentor)}
+                      className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
+                        selectedMentor?.id === mentor.id
+                          ? 'border-blue-600 bg-blue-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                            {mentor.name.split(' ').map(n => n[0]).join('')}
                           </div>
-                        )}
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
+                            <p className="text-sm text-gray-500">{mentor.designation}</p>
+                            <p className="text-xs text-gray-400 mt-1">Currently mentoring {mentor.projects} projects</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          {getCapacityBadge(mentor.capacity)}
+                          {selectedMentor?.id === mentor.id && (
+                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                              <Check className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-700 mb-3">{mentor.statement}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {mentor.domains.map((domain, idx) => (
+                          <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                            {domain}
+                          </span>
+                        ))}
                       </div>
                     </div>
-                    <p className="text-sm text-gray-700 mb-3">{mentor.statement}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {mentor.domains.map((domain, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                          {domain}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -336,7 +430,7 @@ export default function ProjectRequestPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Project Description <span className="text-red-500">*</span>
                     <span className="text-gray-500 font-normal ml-2">
-                      ({wordCounts.description}/150-200 words)
+                      ({wordCounts.description}/50-200 words)
                     </span>
                   </label>
                   <textarea
@@ -386,7 +480,7 @@ export default function ProjectRequestPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Proposed Methodology <span className="text-red-500">*</span>
                     <span className="text-gray-500 font-normal ml-2">
-                      ({wordCounts.methodology} words minimum 30)
+                      ({wordCounts.methodology} words, minimum 30)
                     </span>
                   </label>
                   <textarea
@@ -453,7 +547,7 @@ export default function ProjectRequestPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Project Objectives <span className="text-red-500">*</span>
                     <span className="text-gray-500 font-normal ml-2">
-                      ({wordCounts.objectives} words minimum 20)
+                      ({wordCounts.objectives} words, minimum 20)
                     </span>
                   </label>
                   <textarea
@@ -474,7 +568,7 @@ export default function ProjectRequestPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Expected Outcome <span className="text-red-500">*</span>
                     <span className="text-gray-500 font-normal ml-2">
-                      ({wordCounts.expectedOutcome} words minimum 20)
+                      ({wordCounts.expectedOutcome} words, minimum 20)
                     </span>
                   </label>
                   <textarea
@@ -539,6 +633,14 @@ export default function ProjectRequestPage() {
                     <p><strong>Technologies:</strong> {formData.techStack.length > 0 ? formData.techStack.join(', ') : 'None selected'}</p>
                   </div>
                 </div>
+
+                {/* Submit Error */}
+                {submitError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-2">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-red-700">{submitError}</span>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -567,9 +669,17 @@ export default function ProjectRequestPage() {
             ) : (
               <button
                 onClick={handleSubmit}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"
+                disabled={isSubmitting}
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
-                Submit Request
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  'Submit Request'
+                )}
               </button>
             )}
           </div>
