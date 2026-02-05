@@ -593,7 +593,10 @@ export default function MentorConnectDashboard() {
                           <p className="text-xs text-gray-400 mt-1">Domain: {request.domain} • Submitted on {new Date(request.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                         </div>
                         <div className="flex space-x-2">
-                          <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                          <button 
+                            onClick={() => navigate(`/request-details/${request.id}`)}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                          >
                             View Details
                           </button>
                           {request.status === 'changes_requested' && (
