@@ -1,9 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3000';
+
+/**
+ * Normalizes a domain string to Title Case for consistent display and comparison
+ * e.g., "machine learning" -> "Machine Learning"
+ *       "MACHINE LEARNING" -> "Machine Learning"
+ *       "machine LEARNING" -> "Machine Learning"
+ */
+const normalizeDomain = (domain) => {
+  if (!domain || typeof domain !== 'string') return '';
+  return domain
+    .toLowerCase()
+    .trim()
+    .split(/\s+/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+/**
+ * Creates a normalized key for grouping domains (lowercase, trimmed, single spaces)
+ */
+const getDomainKey = (domain) => {
+  if (!domain || typeof domain !== 'string') return '';
+  return domain.toLowerCase().trim().replace(/\s+/g, ' ');
+};
+
+/**
+ * Takes an array of domains and returns unique normalized domains
+ * Handles duplicates caused by different casing
+ */
+const getUniqueDomains = (domains) => {
+  const domainMap = new Map();
+  
+  domains.forEach(domain => {
+    const key = getDomainKey(domain);
+    if (key && !domainMap.has(key)) {
+      domainMap.set(key, normalizeDomain(domain));
+    }
+  });
+  
+  // Sort alphabetically for better UX
+  return Array.from(domainMap.values()).sort((a, b) => a.localeCompare(b));
+};
+
+/**
+ * Normalizes an array of domains for a mentor
+ * Returns array with consistent Title Case formatting
+ */
+const normalizeMentorDomains = (domains) => {
+  if (!Array.isArray(domains)) return [];
+  return domains.map(d => normalizeDomain(d)).filter(d => d);
+};
 
 export default function MentorConnectDashboard() {
   const [activeTab, setActiveTab] = useState('browse');
@@ -113,16 +164,24 @@ export default function MentorConnectDashboard() {
       });
       
       if (response.data.mentors) {
-        const formattedMentors = response.data.mentors.map(mentor => ({
-          id: mentor._id,
-          name: mentor.user_id?.name || 'Unknown',
-          designation: mentor.designation || 'Faculty',
-          domains: [...(mentor.skills || []), ...(mentor.interest || [])],
-          capacity: mapCapacity(mentor.capacity),
-          projects: mentor.currentProjects || 0,
-          statement: mentor.statement || `Expert in ${(mentor.skills || []).join(', ')}. Looking for motivated students.`,
-          email: mentor.user_id?.email || ''
-        }));
+        const formattedMentors = response.data.mentors.map(mentor => {
+          // Combine skills and interests, then normalize for consistent display
+          const rawDomains = [...(mentor.skills || []), ...(mentor.interest || [])];
+          const normalizedDomains = normalizeMentorDomains(rawDomains);
+          
+          return {
+            id: mentor._id,
+            name: mentor.user_id?.name || 'Unknown',
+            designation: mentor.designation || 'Faculty',
+            domains: normalizedDomains,
+            // Keep raw domains for display variety if needed
+            rawDomains: rawDomains,
+            capacity: mapCapacity(mentor.capacity),
+            projects: mentor.currentProjects || 0,
+            statement: mentor.statement || `Expert in ${(mentor.skills || []).join(', ')}. Looking for motivated students.`,
+            email: mentor.user_id?.email || ''
+          };
+        });
         setAvailableMentors(formattedMentors);
       }
     } catch (err) {
@@ -197,16 +256,31 @@ export default function MentorConnectDashboard() {
     }
   };
 
-  const filteredMentors = availableMentors.filter(mentor => {
-    const matchesSearch = mentor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         mentor.domains.some(d => d.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesDomain = filterDomain === 'all' || mentor.domains.includes(filterDomain);
-    const matchesCapacity = filterCapacity === 'all' || mentor.capacity === filterCapacity;
-    return matchesSearch && matchesDomain && matchesCapacity;
-  });
+  // Memoized unique domains from all mentors for filter dropdown
+  // Uses normalized domains to eliminate case-based duplicates
+  const allDomains = useMemo(() => {
+    const allMentorDomains = availableMentors.flatMap(m => m.domains);
+    return getUniqueDomains(allMentorDomains);
+  }, [availableMentors]);
 
-  // Get unique domains from all mentors for filter dropdown
-  const allDomains = [...new Set(availableMentors.flatMap(m => m.domains))];
+  // Filtered mentors with case-insensitive domain matching
+  const filteredMentors = useMemo(() => {
+    return availableMentors.filter(mentor => {
+      // Case-insensitive search in name and domains
+      const searchLower = searchQuery.toLowerCase().trim();
+      const matchesSearch = !searchLower || 
+        mentor.name.toLowerCase().includes(searchLower) ||
+        mentor.domains.some(d => d.toLowerCase().includes(searchLower));
+      
+      // Case-insensitive domain filter matching
+      const matchesDomain = filterDomain === 'all' || 
+        mentor.domains.some(d => getDomainKey(d) === getDomainKey(filterDomain));
+      
+      const matchesCapacity = filterCapacity === 'all' || mentor.capacity === filterCapacity;
+      
+      return matchesSearch && matchesDomain && matchesCapacity;
+    });
+  }, [availableMentors, searchQuery, filterDomain, filterCapacity]);
 
   // Loading state
   const isLoading = loadingProfile || loadingRequests || loadingMentors;
@@ -351,7 +425,12 @@ export default function MentorConnectDashboard() {
                 </div>
               </div>
             </div>
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">Edit Profile</button>
+            <button 
+              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+              onClick={() => navigate('/student-profile-page')}
+            >
+              Edit Profile
+            </button>
           </div>
         </div>
 

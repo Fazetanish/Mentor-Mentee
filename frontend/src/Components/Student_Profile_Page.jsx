@@ -3,9 +3,14 @@ import { User, Hash, Calendar, BookOpen, Award, Lightbulb, X, Plus, Github, Link
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
+// API Base URL - can be configured via environment variable
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 export default function StudentProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [studentName, setStudentName] = useState('');
+  const [studentEmail, setStudentEmail] = useState('');
   const [formData, setFormData] = useState({
     registration_no: '',
     year: '',
@@ -33,30 +38,54 @@ export default function StudentProfilePage() {
   const fetchProfile = async () => {
     try {
       setLoading(true);
+      setErrorMessage('');
       const token = localStorage.getItem('authToken');
-      const response = await axios.get("http://localhost:3000/user/student/profile", {
+      
+      if (!token) {
+        setErrorMessage('Authentication required. Please log in.');
+        navigate('/login');
+        return;
+      }
+
+      const response = await axios.get(`${API_BASE_URL}/user/student/profile`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       
-      if (response.data) {
+      // Backend returns data in response.data.profile
+      if (response.data && response.data.profile) {
+        const profile = response.data.profile;
+        
+        // Extract user info from populated user_id
+        if (profile.user_id) {
+          setStudentName(profile.user_id.name || '');
+          setStudentEmail(profile.user_id.email || '');
+        }
+        
         setFormData({
-          registration_no: response.data.registration_no || '',
-          year: response.data.year?.toString() || '',
-          section: response.data.section || '',
-          cgpa: response.data.cgpa?.toString() || '',
-          skills: response.data.skills || [],
-          interest: response.data.interest || [],
-          github: response.data.github || '',
-          linkedin: response.data.linkedin || '',
-          portfolio: response.data.portfolio || ''
+          registration_no: profile.registration_no || '',
+          year: profile.year?.toString() || '',
+          section: profile.section || '',
+          cgpa: profile.cgpa?.toString() || '',
+          skills: profile.skills || [],
+          interest: profile.interest || [],
+          github: profile.github || '',
+          linkedin: profile.linkedin || '',
+          portfolio: profile.portfolio || ''
         });
       }
     } catch (error) {
-      if (error.response?.status !== 404) {
-        setErrorMessage('Failed to load profile data');
+      if (error.response?.status === 401) {
+        setErrorMessage('Session expired. Please log in again.');
+        localStorage.removeItem('authToken');
+        navigate('/login');
+      } else if (error.response?.status === 403) {
+        setErrorMessage('Access denied. Only students can view this page.');
+      } else if (error.response?.status !== 404) {
+        setErrorMessage('Failed to load profile data. Please try again.');
       }
+      // 404 means profile not found - user needs to create one, so we don't show error
     } finally {
       setLoading(false);
     }
@@ -154,16 +183,26 @@ export default function StudentProfilePage() {
 
     try {
       const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        setErrorMessage('Authentication required. Please log in.');
+        navigate('/login');
+        return;
+      }
+
       const payload = {
-        ...formData,
         year: parseInt(formData.year),
+        section: formData.section || undefined,
         cgpa: formData.cgpa ? parseFloat(formData.cgpa) : undefined,
+        skills: formData.skills,
+        interest: formData.interest,
         github: formData.github || undefined,
         linkedin: formData.linkedin || undefined,
         portfolio: formData.portfolio || undefined
       };
 
-      await axios.put("http://localhost:3000/user/student/profile", payload, {
+      // Use PATCH endpoint as defined in backend
+      await axios.patch(`${API_BASE_URL}/user/student/profile`, payload, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -178,7 +217,15 @@ export default function StudentProfilePage() {
         setSuccessMessage('');
       }, 2000);
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Failed to update profile. Please try again.');
+      if (error.response?.status === 401) {
+        setErrorMessage('Session expired. Please log in again.');
+        localStorage.removeItem('authToken');
+        navigate('/login');
+      } else if (error.response?.status === 404) {
+        setErrorMessage('Profile not found. Please create a profile first.');
+      } else {
+        setErrorMessage(error.response?.data?.message || 'Failed to update profile. Please try again.');
+      }
     }
   };
 
@@ -216,8 +263,8 @@ export default function StudentProfilePage() {
                   <User className="w-10 h-10 text-blue-600" />
                 </div>
                 <div className="text-white">
-                  <h1 className="text-3xl font-bold">Student Profile</h1>
-                  <p className="text-blue-100">Manage your academic information</p>
+                  <h1 className="text-3xl font-bold">{studentName || 'Student Profile'}</h1>
+                  <p className="text-blue-100">{studentEmail || 'Manage your academic information'}</p>
                 </div>
               </div>
               <div>
@@ -302,7 +349,8 @@ export default function StudentProfilePage() {
                         type="text"
                         value={formData.registration_no}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        disabled={true} // Registration number should not be editable
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-gray-100 cursor-not-allowed"
                         placeholder="23FE10CSE00534"
                       />
                     </div>
