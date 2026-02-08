@@ -333,6 +333,7 @@ export default function StudentProfilePage() {
             <div>
               <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center space-x-2">
                 <User className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <span>Basic Information</span>
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -362,6 +363,7 @@ export default function StudentProfilePage() {
 
                 <div className="space-y-2">
                   <label htmlFor="year" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    Year *
                   </label>
                   {isEditing ? (
                     <div className="relative">
@@ -390,6 +392,7 @@ export default function StudentProfilePage() {
 
                 <div className="space-y-2">
                   <label htmlFor="section" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    Section
                   </label>
                   {isEditing ? (
                     <div className="relative">
@@ -413,6 +416,7 @@ export default function StudentProfilePage() {
 
                 <div className="space-y-2">
                   <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    CGPA
                   </label>
                   {isEditing ? (
                     <div className="relative">
@@ -582,6 +586,7 @@ export default function StudentProfilePage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="github" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    GitHub Profile
                   </label>
                   {isEditing ? (
                     <div className="relative">
