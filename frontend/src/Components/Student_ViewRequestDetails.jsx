@@ -86,45 +86,45 @@ export default function RequestDetails() {
     switch(status) {
       case 'approved':
         return {
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          borderColor: 'border-green-200',
+          color: 'text-green-600 dark:text-green-300',
+          bgColor: 'bg-green-50 dark:bg-green-900/30',
+          borderColor: 'border-green-200 dark:border-green-800',
           icon: <CheckCircle className="w-5 h-5" />,
           label: 'Approved',
           description: 'Your project request has been approved by the mentor.'
         };
       case 'pending':
         return {
-          color: 'text-yellow-600',
-          bgColor: 'bg-yellow-50',
-          borderColor: 'border-yellow-200',
+          color: 'text-yellow-600 dark:text-yellow-300',
+          bgColor: 'bg-yellow-50 dark:bg-yellow-900/30',
+          borderColor: 'border-yellow-200 dark:border-yellow-800',
           icon: <Clock className="w-5 h-5" />,
           label: 'Pending Review',
           description: 'Your request is awaiting review from the mentor.'
         };
       case 'rejected':
         return {
-          color: 'text-red-600',
-          bgColor: 'bg-red-50',
-          borderColor: 'border-red-200',
+          color: 'text-red-600 dark:text-red-300',
+          bgColor: 'bg-red-50 dark:bg-red-900/30',
+          borderColor: 'border-red-200 dark:border-red-800',
           icon: <XCircle className="w-5 h-5" />,
           label: 'Rejected',
           description: 'Unfortunately, your request was not approved.'
         };
       case 'changes_requested':
         return {
-          color: 'text-orange-600',
-          bgColor: 'bg-orange-50',
-          borderColor: 'border-orange-200',
+          color: 'text-orange-600 dark:text-orange-300',
+          bgColor: 'bg-orange-50 dark:bg-orange-900/30',
+          borderColor: 'border-orange-200 dark:border-orange-800',
           icon: <AlertCircle className="w-5 h-5" />,
           label: 'Changes Requested',
           description: 'The mentor has requested some changes to your proposal.'
         };
       default:
         return {
-          color: 'text-gray-600',
-          bgColor: 'bg-gray-50',
-          borderColor: 'border-gray-200',
+          color: 'text-gray-600 dark:text-gray-300',
+          bgColor: 'bg-gray-50 dark:bg-gray-900',
+          borderColor: 'border-gray-200 dark:border-gray-700',
           icon: <Clock className="w-5 h-5" />,
           label: 'Unknown',
           description: ''
@@ -145,10 +145,10 @@ export default function RequestDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-          <p className="text-gray-600">Loading request details...</p>
+          <Loader2 className="w-12 h-12 text-blue-600 dark:text-blue-400 animate-spin" />
+          <p className="text-gray-600 dark:text-gray-300">Loading request details...</p>
         </div>
       </div>
     );
@@ -156,13 +156,13 @@ export default function RequestDetails() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <XCircle className="w-8 h-8 text-red-600" />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <XCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Error</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
           <button
             onClick={() => navigate('/student-landing-page')}
             className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"
@@ -181,21 +181,21 @@ export default function RequestDetails() {
   const statusConfig = getStatusConfig(request.status);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/student-landing-page')}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
+                <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </button>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Request Details</h1>
-                <p className="text-sm text-gray-500">View your project request information</p>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Request Details</h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">View your project request information</p>
               </div>
             </div>
           </div>
@@ -214,31 +214,31 @@ export default function RequestDetails() {
                 <h2 className={`text-lg font-semibold ${statusConfig.color}`}>
                   {statusConfig.label}
                 </h2>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
                   Submitted on {formatDate(request.createdAt)}
                 </span>
               </div>
-              <p className="text-gray-600 mt-1">{statusConfig.description}</p>
+              <p className="text-gray-600 dark:text-gray-300 mt-1">{statusConfig.description}</p>
             </div>
           </div>
         </div>
 
         {/* Mentor Feedback Section (if available) */}
         {request.mentorFeedback && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                 <MessageSquare className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Mentor Feedback</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Mentor Feedback</h3>
                 {request.respondedAt && (
-                  <p className="text-sm text-gray-500">Responded on {formatDate(request.respondedAt)}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Responded on {formatDate(request.respondedAt)}</p>
                 )}
               </div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-gray-700 whitespace-pre-wrap">{request.mentorFeedback}</p>
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+              <p className="text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{request.mentorFeedback}</p>
             </div>
           </div>
         )}
@@ -247,49 +247,49 @@ export default function RequestDetails() {
           {/* Left Column - Main Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Project Overview */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Project Overview</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Project Overview</h3>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Project Title</label>
-                  <p className="mt-1 text-lg font-semibold text-gray-900">{request.projectTitle}</p>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Project Title</label>
+                  <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">{request.projectTitle}</p>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Description</label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-wrap">{request.description}</p>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+                  <p className="mt-1 text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{request.description}</p>
                 </div>
               </div>
             </div>
 
             {/* Methodology & Tech Stack */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Code className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                  <Code className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Methodology & Technology</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Methodology & Technology</h3>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Methodology</label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-wrap">{request.methodology}</p>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Methodology</label>
+                  <p className="mt-1 text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{request.methodology}</p>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Technology Stack</label>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Technology Stack</label>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {(request.techStack || []).map((tech, idx) => (
                       <span 
                         key={idx} 
-                        className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 text-sm font-medium rounded-full border border-blue-100"
+                        className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full border border-blue-100 dark:border-blue-800"
                       >
                         {tech}
                       </span>
@@ -300,37 +300,37 @@ export default function RequestDetails() {
             </div>
 
             {/* Goals & Outcomes */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Target className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <Target className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Goals & Outcomes</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Goals & Outcomes</h3>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Objectives</label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-wrap">{request.objectives}</p>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Objectives</label>
+                  <p className="mt-1 text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{request.objectives}</p>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Expected Outcome</label>
-                  <p className="mt-1 text-gray-700 whitespace-pre-wrap">{request.expectedOutcome}</p>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Expected Outcome</label>
+                  <p className="mt-1 text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{request.expectedOutcome}</p>
                 </div>
               </div>
             </div>
 
             {/* Additional Notes (if available) */}
             {request.additionalNotes && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <Lightbulb className="w-5 h-5 text-yellow-600" />
+                  <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                    <Lightbulb className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Additional Notes</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Additional Notes</h3>
                 </div>
-                <p className="text-gray-700 whitespace-pre-wrap">{request.additionalNotes}</p>
+                <p className="text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{request.additionalNotes}</p>
               </div>
             )}
           </div>
@@ -338,18 +338,18 @@ export default function RequestDetails() {
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
             {/* Mentor Info */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
                   {(request.mentor_id?.name || 'M').split(' ').map(n => n[0]).join('')}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{request.mentor_id?.name || 'Unknown Mentor'}</h3>
-                  <p className="text-sm text-gray-500">Mentor</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">{request.mentor_id?.name || 'Unknown Mentor'}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Mentor</p>
                 </div>
               </div>
               {request.mentor_id?.email && (
-                <div className="flex items-center space-x-2 text-sm text-gray-600 mt-3 pt-3 border-t border-gray-100">
+                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                   <Mail className="w-4 h-4" />
                   <span>{request.mentor_id.email}</span>
                 </div>
@@ -357,29 +357,29 @@ export default function RequestDetails() {
             </div>
 
             {/* Project Details Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Project Details</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Project Details</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-gray-600">
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
                     <Timer className="w-4 h-4" />
                     <span className="text-sm">Duration</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{request.duration}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{request.duration}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-gray-600">
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
                     <Users className="w-4 h-4" />
                     <span className="text-sm">Team Size</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{request.teamSize} member(s)</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{request.teamSize} member(s)</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-gray-600">
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
                     <Calendar className="w-4 h-4" />
                     <span className="text-sm">Submitted</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {new Date(request.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                 </div>
@@ -407,7 +407,7 @@ export default function RequestDetails() {
               )}
               <button
                 onClick={() => navigate('/student-landing-page')}
-                className="w-full px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all"
+                className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
               >
                 Back to Dashboard
               </button>
