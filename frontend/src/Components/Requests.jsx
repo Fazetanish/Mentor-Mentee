@@ -239,26 +239,26 @@ export default function ProjectRequestPage() {
 
   const getCapacityBadge = (capacity) => {
     switch(capacity) {
-      case 'available': return <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Available</span>;
-      case 'limited': return <span className="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full">Limited Slots</span>;
+      case 'available': return <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-300 rounded-full">Available</span>;
+      case 'limited': return <span className="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300 rounded-full">Limited Slots</span>;
       default: return null;
     }
   };
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Submitted!</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Request Submitted!</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             Your project request has been sent to {selectedMentor.name}. You'll receive a notification once they review your proposal.
           </p>
-          <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left">
-            <p className="text-sm font-medium text-gray-900 mb-2">Next Steps:</p>
-            <ul className="text-sm text-gray-600 space-y-1">
+          <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 mb-6 text-left">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Next Steps:</p>
+            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
               <li>• Monitor your dashboard for status updates</li>
               <li>• Check your email for notifications</li>
               <li>• Mentor typically responds within 3-5 days</li>
@@ -276,21 +276,21 @@ export default function ProjectRequestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/student-landing-page')}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
+                <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </button>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">New Project Request</h1>
-                <p className="text-sm text-gray-500">Submit a detailed proposal to your chosen mentor</p>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">New Project Request</h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Submit a detailed proposal to your chosen mentor</p>
               </div>
             </div>
           </div>
@@ -307,12 +307,12 @@ export default function ProjectRequestPage() {
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
                     currentStep >= step
                       ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                      : 'bg-gray-200 text-gray-500'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
                   }`}>
                     {step}
                   </div>
                   <span className={`text-xs mt-2 font-medium ${
-                    currentStep >= step ? 'text-blue-600' : 'text-gray-500'
+                    currentStep >= step ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
                   }`}>
                     {step === 1 && 'Select Mentor'}
                     {step === 2 && 'Project Details'}
@@ -322,7 +322,7 @@ export default function ProjectRequestPage() {
                 </div>
                 {step < 4 && (
                   <div className={`flex-1 h-1 mx-4 rounded transition-all ${
-                    currentStep > step ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gray-200'
+                    currentStep > step ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gray-200 dark:bg-gray-700'
                   }`} />
                 )}
               </React.Fragment>
@@ -331,17 +331,17 @@ export default function ProjectRequestPage() {
         </div>
 
         {/* Form Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
           {/* Step 1: Select Mentor */}
           {currentStep === 1 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Your Mentor</h2>
-              <p className="text-gray-600 mb-6">Choose a faculty member whose expertise aligns with your project interests</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Select Your Mentor</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">Choose a faculty member whose expertise aligns with your project interests</p>
               
               {errors.mentor && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-2">
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg flex items-start space-x-2">
                   <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-red-700">{errors.mentor}</span>
+                  <span className="text-sm text-red-700 dark:text-red-300">{errors.mentor}</span>
                 </div>
               )}
 
@@ -351,8 +351,8 @@ export default function ProjectRequestPage() {
                 </div>
               ) : availableMentors.length === 0 ? (
                 <div className="text-center py-12">
-                  <User className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No mentors available at the moment.</p>
+                  <User className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-gray-400">No mentors available at the moment.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -362,8 +362,8 @@ export default function ProjectRequestPage() {
                       onClick={() => setSelectedMentor(mentor)}
                       className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
                         selectedMentor?.id === mentor.id
-                          ? 'border-blue-600 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-500'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                       }`}
                     >
                       <div className="flex items-start justify-between mb-3">
@@ -372,9 +372,9 @@ export default function ProjectRequestPage() {
                             {mentor.name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
-                            <p className="text-sm text-gray-500">{mentor.designation}</p>
-                            <p className="text-xs text-gray-400 mt-1">Currently mentoring {mentor.projects} projects</p>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{mentor.name}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{mentor.designation}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Currently mentoring {mentor.projects} projects</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
@@ -386,10 +386,10 @@ export default function ProjectRequestPage() {
                           )}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-700 mb-3">{mentor.statement}</p>
+                      <p className="text-sm text-gray-700 dark:text-gray-200 mb-3">{mentor.statement}</p>
                       <div className="flex flex-wrap gap-2">
                         {mentor.domains.map((domain, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                          <span key={idx} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-full">
                             {domain}
                           </span>
                         ))}
@@ -404,12 +404,12 @@ export default function ProjectRequestPage() {
           {/* Step 2: Project Details */}
           {currentStep === 2 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Project Details</h2>
-              <p className="text-gray-600 mb-6">Provide a clear and concise overview of your project idea</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Project Details</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">Provide a clear and concise overview of your project idea</p>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Project Title <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -417,8 +417,8 @@ export default function ProjectRequestPage() {
                     value={formData.projectTitle}
                     onChange={(e) => handleInputChange('projectTitle', e.target.value)}
                     placeholder="e.g., AI-Powered Medical Diagnosis System"
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.projectTitle ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 ${
+                      errors.projectTitle ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                     }`}
                   />
                   {errors.projectTitle && (
@@ -427,9 +427,9 @@ export default function ProjectRequestPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Project Description <span className="text-red-500">*</span>
-                    <span className="text-gray-500 font-normal ml-2">
+                    <span className="text-gray-500 dark:text-gray-400 font-normal ml-2">
                       ({wordCounts.description}/50-200 words)
                     </span>
                   </label>
@@ -438,26 +438,26 @@ export default function ProjectRequestPage() {
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     placeholder="Describe your project idea, the problem it solves, and why it's important..."
                     rows={6}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.description ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 ${
+                      errors.description ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                     }`}
                   />
                   {errors.description && (
                     <p className="mt-1 text-sm text-red-600">{errors.description}</p>
                   )}
-                  <p className="mt-2 text-xs text-gray-500">
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     Tip: Include the problem statement, target users, and potential impact
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Team Size
                   </label>
                   <select
                     value={formData.teamSize}
                     onChange={(e) => handleInputChange('teamSize', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
                   >
                     <option value="1">Individual Project</option>
                     <option value="2">2 Members</option>
@@ -472,14 +472,14 @@ export default function ProjectRequestPage() {
           {/* Step 3: Methodology & Tech Stack */}
           {currentStep === 3 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Methodology & Technology</h2>
-              <p className="text-gray-600 mb-6">Explain your approach and the technologies you'll use</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Methodology & Technology</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">Explain your approach and the technologies you'll use</p>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Proposed Methodology <span className="text-red-500">*</span>
-                    <span className="text-gray-500 font-normal ml-2">
+                    <span className="text-gray-500 dark:text-gray-400 font-normal ml-2">
                       ({wordCounts.methodology} words, minimum 30)
                     </span>
                   </label>
@@ -488,22 +488,22 @@ export default function ProjectRequestPage() {
                     onChange={(e) => handleInputChange('methodology', e.target.value)}
                     placeholder="Describe your approach, algorithms, frameworks, and implementation strategy..."
                     rows={6}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.methodology ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 ${
+                      errors.methodology ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                     }`}
                   />
                   {errors.methodology && (
                     <p className="mt-1 text-sm text-red-600">{errors.methodology}</p>
                   )}
-                  <p className="mt-2 text-xs text-gray-500">
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     Tip: Break down your approach into phases or steps
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-3">
                     Technology Stack <span className="text-red-500">*</span>
-                    <span className="text-gray-500 font-normal ml-2">
+                    <span className="text-gray-500 dark:text-gray-400 font-normal ml-2">
                       (Select all that apply)
                     </span>
                   </label>
@@ -516,7 +516,7 @@ export default function ProjectRequestPage() {
                         className={`px-3 py-2 text-sm font-medium rounded-lg transition-all ${
                           formData.techStack.includes(tech)
                             ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                       >
                         {tech}
@@ -527,7 +527,7 @@ export default function ProjectRequestPage() {
                     <p className="mt-2 text-sm text-red-600">{errors.techStack}</p>
                   )}
                   {formData.techStack.length > 0 && (
-                    <p className="mt-3 text-sm text-gray-600">
+                    <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
                       Selected: {formData.techStack.join(', ')}
                     </p>
                   )}
@@ -539,14 +539,14 @@ export default function ProjectRequestPage() {
           {/* Step 4: Goals & Timeline */}
           {currentStep === 4 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Objectives & Timeline</h2>
-              <p className="text-gray-600 mb-6">Define clear goals and expected outcomes</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Objectives & Timeline</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">Define clear goals and expected outcomes</p>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Project Objectives <span className="text-red-500">*</span>
-                    <span className="text-gray-500 font-normal ml-2">
+                    <span className="text-gray-500 dark:text-gray-400 font-normal ml-2">
                       ({wordCounts.objectives} words, minimum 20)
                     </span>
                   </label>
@@ -555,8 +555,8 @@ export default function ProjectRequestPage() {
                     onChange={(e) => handleInputChange('objectives', e.target.value)}
                     placeholder="List specific, measurable goals for this project..."
                     rows={5}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.objectives ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 ${
+                      errors.objectives ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                     }`}
                   />
                   {errors.objectives && (
@@ -565,9 +565,9 @@ export default function ProjectRequestPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Expected Outcome <span className="text-red-500">*</span>
-                    <span className="text-gray-500 font-normal ml-2">
+                    <span className="text-gray-500 dark:text-gray-400 font-normal ml-2">
                       ({wordCounts.expectedOutcome} words, minimum 20)
                     </span>
                   </label>
@@ -576,8 +576,8 @@ export default function ProjectRequestPage() {
                     onChange={(e) => handleInputChange('expectedOutcome', e.target.value)}
                     placeholder="What will be the final deliverable? What impact do you expect?"
                     rows={5}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.expectedOutcome ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 ${
+                      errors.expectedOutcome ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                     }`}
                   />
                   {errors.expectedOutcome && (
@@ -586,14 +586,14 @@ export default function ProjectRequestPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Project Duration <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.duration}
                     onChange={(e) => handleInputChange('duration', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.duration ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 ${
+                      errors.duration ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                     }`}
                   >
                     <option value="">Select duration</option>
@@ -608,7 +608,7 @@ export default function ProjectRequestPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Additional Notes (Optional)
                   </label>
                   <textarea
@@ -616,17 +616,17 @@ export default function ProjectRequestPage() {
                     onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
                     placeholder="Any other information you'd like to share with your mentor..."
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
                   />
                 </div>
 
                 {/* Summary Box */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
-                    <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" />
                     Request Summary
                   </h3>
-                  <div className="space-y-1 text-sm text-gray-700">
+                  <div className="space-y-1 text-sm text-gray-700 dark:text-gray-200">
                     <p><strong>Mentor:</strong> {selectedMentor?.name}</p>
                     <p><strong>Project:</strong> {formData.projectTitle || 'Not specified'}</p>
                     <p><strong>Duration:</strong> {formData.duration || 'Not specified'}</p>
@@ -636,9 +636,9 @@ export default function ProjectRequestPage() {
 
                 {/* Submit Error */}
                 {submitError && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-2">
+                  <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg flex items-start space-x-2">
                     <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-red-700">{submitError}</span>
+                    <span className="text-sm text-red-700 dark:text-red-300">{submitError}</span>
                   </div>
                 )}
               </div>
@@ -646,14 +646,14 @@ export default function ProjectRequestPage() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+          <div className="flex justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={handleBack}
               disabled={currentStep === 1}
               className={`px-6 py-3 font-medium rounded-lg transition-all ${
                 currentStep === 1
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600'
               }`}
             >
               Back
