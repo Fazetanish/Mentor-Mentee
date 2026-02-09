@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ThemeToggle from './ThemeToggle';
 
 const API_BASE_URL = 'http://localhost:3000';
 
@@ -312,10 +313,15 @@ export default function MentorConnectDashboard() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md" onClick={()=>navigate('/project-request')}>
-                <Plus className="w-4 h-4 inline mr-2" />
-                New Request
-              </button>
+            <ThemeToggle />
+
+            <button
+              className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              onClick={() => navigate('/project-request')}
+            >
+              <Plus className="w-4 h-4 inline mr-2" />
+              New Request
+            </button>
               <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{studentProfile?.name || 'Student'}</p>

@@ -392,6 +392,33 @@ UserRouter.get("/student/profile/:studentId", authJWTMiddleware, async function(
     }
 });
 
+// Get all students (for teachers to browse)
+UserRouter.get("/students", authJWTMiddleware, async function(req, res) {
+    // Only teachers can browse student pool
+    if (req.user.role !== "teacher") {
+        return res.status(403).json({
+            message: "Access denied"
+        });
+    }
+
+    try {
+        const students = await Student_Profiles_Model.find()
+            .populate('user_id', 'name email')
+            .sort({ cgpa: -1 }); // Sort by CGPA descending
+
+        return res.status(200).json({
+            message: "Students fetched successfully",
+            students: students
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+});
+
 module.exports = {
     UserRouter: UserRouter
 };
