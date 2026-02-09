@@ -248,11 +248,11 @@ export default function TeacherLandingPage() {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'pending': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'approved': return 'text-green-600 bg-green-50 border-green-200';
-      case 'rejected': return 'text-red-600 bg-red-50 border-red-200';
-      case 'changes_requested': return 'text-orange-600 bg-orange-50 border-orange-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case 'pending': return 'text-yellow-600 bg-yellow-50 border-yellow-200 dark:text-yellow-300 dark:bg-yellow-900/30 dark:border-yellow-700';
+      case 'approved': return 'text-green-600 bg-green-50 border-green-200 dark:text-green-300 dark:bg-green-900/30 dark:border-green-700';
+      case 'rejected': return 'text-red-600 bg-red-50 border-red-200 dark:text-red-300 dark:bg-red-900/30 dark:border-red-700';
+      case 'changes_requested': return 'text-orange-600 bg-orange-50 border-orange-200 dark:text-orange-300 dark:bg-orange-900/30 dark:border-orange-700';
+      default: return 'text-gray-600 bg-gray-50 border-gray-200 dark:text-gray-300 dark:bg-gray-900 dark:border-gray-700';
     }
   };
 
@@ -268,10 +268,10 @@ export default function TeacherLandingPage() {
 
   const getCapacityColor = (capacity) => {
     switch(capacity) {
-      case 'available': return 'text-green-700 bg-green-100';
-      case 'limited slots': return 'text-yellow-700 bg-yellow-100';
-      case 'full': return 'text-red-700 bg-red-100';
-      default: return 'text-gray-700 bg-gray-100';
+      case 'available': return 'text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/30';
+      case 'limited slots': return 'text-yellow-700 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/30';
+      case 'full': return 'text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/30';
+      default: return 'text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-700';
     }
   };
 
@@ -302,31 +302,31 @@ export default function TeacherLandingPage() {
 
   if (isLoading && !mentorProfile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-900 dark:to-teal-950 flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
           <Loader2 className="w-12 h-12 text-emerald-600 animate-spin" />
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <p className="text-gray-600 dark:text-gray-300">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-900 dark:to-teal-950">
       {/* Feedback Modal */}
       {showFeedbackModal && selectedRequest && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Request Changes</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Request Changes</h3>
               <button 
                 onClick={() => setShowFeedbackModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
               Provide feedback for <span className="font-medium">{selectedRequest.student.name}</span> regarding their project request.
             </p>
             <textarea
@@ -334,18 +334,18 @@ export default function TeacherLandingPage() {
               onChange={(e) => setFeedbackText(e.target.value)}
               placeholder="Explain what changes are needed..."
               rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent mb-4"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent mb-4"
             />
             {actionError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-2">
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg flex items-start space-x-2">
                 <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-red-700">{actionError}</span>
+                <span className="text-sm text-red-700 dark:text-red-300">{actionError}</span>
               </div>
             )}
             <div className="flex justify-end space-x-3">
               <button
                 onClick={() => setShowFeedbackModal(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               >
                 Cancel
               </button>
@@ -369,7 +369,7 @@ export default function TeacherLandingPage() {
       )}
 
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -377,8 +377,8 @@ export default function TeacherLandingPage() {
                 <GraduationCap className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">MentorConnect</h1>
-                <p className="text-sm text-gray-500">Faculty Mentorship Dashboard</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">MentorConnect</h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Faculty Mentorship Dashboard</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -390,8 +390,8 @@ export default function TeacherLandingPage() {
               </button>
               <div className="flex items-center space-x-3">
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">{mentorProfile?.name || 'Teacher'}</p>
-                  <p className="text-xs text-gray-500">{mentorProfile?.designation || 'Faculty'}</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{mentorProfile?.name || 'Teacher'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{mentorProfile?.designation || 'Faculty'}</p>
                 </div>
                 <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center text-white font-semibold">
                   {(mentorProfile?.name || 'T').split(' ').map(n => n[0]).join('')}
@@ -405,54 +405,54 @@ export default function TeacherLandingPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Pending Requests</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Pending Requests</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
                   {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : incomingRequests.filter(r => r.status === 'pending').length}
                 </p>
               </div>
-              <div className="bg-yellow-100 p-3 rounded-lg">
+              <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-lg">
                 <Clock className="w-6 h-6 text-yellow-600" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Active Projects</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Active Projects</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
                   {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : activeProjects.length}
                 </p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg">
+              <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg">
                 <FileText className="w-6 h-6 text-blue-600" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Capacity</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Capacity</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
                   {activeProjects.length}/{mentorProfile?.maxCapacity || 8}
                 </p>
               </div>
-              <div className="bg-emerald-100 p-3 rounded-lg">
+              <div className="bg-emerald-100 dark:bg-emerald-900/30 p-3 rounded-lg">
                 <Users className="w-6 h-6 text-emerald-600" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Status</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Status</p>
                 <span className={`inline-block px-3 py-1 text-sm font-semibold rounded-full mt-2 ${getCapacityColor(mentorProfile?.capacity || 'available')}`}>
                   {(mentorProfile?.capacity || 'available').charAt(0).toUpperCase() + (mentorProfile?.capacity || 'available').slice(1)}
                 </span>
               </div>
-              <div className="bg-purple-100 p-3 rounded-lg">
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-lg">
                 <TrendingUp className="w-6 h-6 text-purple-600" />
               </div>
             </div>
@@ -460,11 +460,11 @@ export default function TeacherLandingPage() {
         </div>
 
         {/* Profile Summary */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mb-8">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Your Mentorship Profile</h2>
-              <p className="text-sm text-gray-600 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Your Mentorship Profile</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                 {mentorProfile?.statement || 'Add a statement to let students know what kind of projects you are interested in mentoring.'}
               </p>
             </div>
@@ -477,7 +477,7 @@ export default function TeacherLandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <p className="text-sm text-gray-500 mb-2">Areas of Expertise</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Areas of Expertise</p>
               <div className="flex flex-wrap gap-2">
                 {(mentorProfile?.domains || []).length > 0 ? (
                   mentorProfile.domains.map((domain, idx) => (
@@ -486,31 +486,31 @@ export default function TeacherLandingPage() {
                     </span>
                   ))
                 ) : (
-                  <span className="text-gray-400 text-sm">No expertise areas added yet</span>
+                  <span className="text-gray-400 dark:text-gray-500 text-sm">No expertise areas added yet</span>
                 )}
               </div>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-2">Contact Information</p>
-              <p className="text-sm text-gray-700">{mentorProfile?.email || 'No email available'}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Contact Information</p>
+              <p className="text-sm text-gray-700 dark:text-gray-200">{mentorProfile?.email || 'No email available'}</p>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <div className="flex space-x-8 px-6">
               <button
                 onClick={() => setActiveTab('requests')}
                 className={`py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'requests'
                     ? 'border-emerald-600 text-emerald-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}
               >
                 Incoming Requests
-                <span className="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">
+                <span className="ml-2 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-xs font-semibold rounded-full">
                   {incomingRequests.filter(r => r.status === 'pending').length}
                 </span>
               </button>
@@ -519,7 +519,7 @@ export default function TeacherLandingPage() {
                 className={`py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'active'
                     ? 'border-emerald-600 text-emerald-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}
               >
                 Active Projects
@@ -529,7 +529,7 @@ export default function TeacherLandingPage() {
                 className={`py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'students'
                     ? 'border-emerald-600 text-emerald-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}
               >
                 Student Pool
@@ -543,19 +543,19 @@ export default function TeacherLandingPage() {
               {/* Search and Filters */}
               <div className="flex flex-col md:flex-row gap-4 mb-6">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
                   <input
                     type="text"
                     placeholder="Search by student name or project title..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 >
                   <option value="all">All Statuses</option>
                   <option value="pending">Pending</option>
@@ -566,7 +566,7 @@ export default function TeacherLandingPage() {
                 <select
                   value={filterDomain}
                   onChange={(e) => setFilterDomain(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 >
                   <option value="all">All Domains</option>
                   {allDomains.map((domain, idx) => (
@@ -583,12 +583,12 @@ export default function TeacherLandingPage() {
               ) : filteredRequests.length === 0 ? (
                 <div className="text-center py-12">
                   <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No requests found matching your criteria.</p>
+                  <p className="text-gray-500 dark:text-gray-400">No requests found matching your criteria.</p>
                 </div>
               ) : (
                 <div className="space-y-6">
                   {filteredRequests.map((request) => (
-                    <div key={request.id} className="border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all">
+                    <div key={request.id} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-lg transition-all">
                       {/* Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-start space-x-4 flex-1">
@@ -597,96 +597,96 @@ export default function TeacherLandingPage() {
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-1">
-                              <h3 className="text-lg font-semibold text-gray-900">{request.student.name}</h3>
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{request.student.name}</h3>
                               <span className={`px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(request.status)} flex items-center space-x-1`}>
                                 {getStatusIcon(request.status)}
                                 <span className="ml-1 capitalize">{request.status.replace('_', ' ')}</span>
                               </span>
                             </div>
-                            <p className="text-sm text-gray-600">{request.student.regNo} • {request.student.year} • CGPA: {request.student.cgpa}</p>
-                            <p className="text-xs text-gray-400 mt-1">Submitted {request.daysAgo} days ago</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">{request.student.regNo} • {request.student.year} • CGPA: {request.student.cgpa}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Submitted {request.daysAgo} days ago</p>
                           </div>
                         </div>
                       </div>
 
                       {/* Student Skills & Interests */}
-                      <div className="grid grid-cols-2 gap-4 mb-4 bg-gray-50 rounded-lg p-4">
+                      <div className="grid grid-cols-2 gap-4 mb-4 bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
                         <div>
-                          <p className="text-xs text-gray-500 font-medium mb-2">Skills</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">Skills</p>
                           <div className="flex flex-wrap gap-1">
                             {(request.student.skills || []).slice(0, 3).map((skill, idx) => (
-                              <span key={idx} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">
+                              <span key={idx} className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full">
                                 {skill}
                               </span>
                             ))}
                             {(request.student.skills || []).length > 3 && (
-                              <span className="px-2 py-0.5 bg-gray-200 text-gray-600 text-xs rounded-full">
+                              <span className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-full">
                                 +{request.student.skills.length - 3}
                               </span>
                             )}
                             {(request.student.skills || []).length === 0 && (
-                              <span className="text-gray-400 text-xs">No skills listed</span>
+                              <span className="text-gray-400 dark:text-gray-500 text-xs">No skills listed</span>
                             )}
                           </div>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500 font-medium mb-2">Interests</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">Interests</p>
                           <div className="flex flex-wrap gap-1">
                             {(request.student.interests || []).map((interest, idx) => (
-                              <span key={idx} className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">
+                              <span key={idx} className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs rounded-full">
                                 {interest}
                               </span>
                             ))}
                             {(request.student.interests || []).length === 0 && (
-                              <span className="text-gray-400 text-xs">No interests listed</span>
+                              <span className="text-gray-400 dark:text-gray-500 text-xs">No interests listed</span>
                             )}
                           </div>
                         </div>
                       </div>
 
                       {/* Project Details */}
-                      <div className="bg-emerald-50 rounded-lg p-4 mb-4">
+                      <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 mb-4">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900">{request.project.title}</h4>
-                          <span className="px-2 py-1 bg-emerald-200 text-emerald-800 text-xs font-medium rounded-full">
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">{request.project.title}</h4>
+                          <span className="px-2 py-1 bg-emerald-200 dark:bg-emerald-800/40 text-emerald-800 dark:text-emerald-300 text-xs font-medium rounded-full">
                             {request.project.domain}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-700 mb-3">{request.project.description}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-200 mb-3">{request.project.description}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                           <div>
-                            <p className="text-gray-500 font-medium mb-1">Methodology & Tech Stack</p>
-                            <p className="text-gray-700">{request.project.methodology}</p>
+                            <p className="text-gray-500 dark:text-gray-400 font-medium mb-1">Methodology & Tech Stack</p>
+                            <p className="text-gray-700 dark:text-gray-200">{request.project.methodology}</p>
                             <div className="flex flex-wrap gap-1 mt-2">
                               {(request.project.techStack || []).map((tech, idx) => (
-                                <span key={idx} className="px-2 py-0.5 bg-gray-200 text-gray-700 text-xs rounded-full">
+                                <span key={idx} className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs rounded-full">
                                   {tech}
                                 </span>
                               ))}
                             </div>
                           </div>
                           <div>
-                            <p className="text-gray-500 font-medium mb-1">Expected Outcomes</p>
-                            <p className="text-gray-700">{request.project.objectives}</p>
+                            <p className="text-gray-500 dark:text-gray-400 font-medium mb-1">Expected Outcomes</p>
+                            <p className="text-gray-700 dark:text-gray-200">{request.project.objectives}</p>
                           </div>
                         </div>
                       </div>
 
                       {/* Feedback Section (if changes requested) */}
                       {request.status === 'changes_requested' && request.feedback && (
-                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                        <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg p-4 mb-4">
                           <div className="flex items-start space-x-2">
                             <AlertCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
                             <div>
-                              <p className="text-sm font-medium text-orange-900">Feedback Provided</p>
-                              <p className="text-sm text-orange-700 mt-1">{request.feedback}</p>
+                              <p className="text-sm font-medium text-orange-900 dark:text-orange-300">Feedback Provided</p>
+                              <p className="text-sm text-orange-700 dark:text-orange-400 mt-1">{request.feedback}</p>
                             </div>
                           </div>
                         </div>
                       )}
 
                       {/* Action Buttons */}
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                         {request.student.github ? (
                           <a 
                             href={request.student.github.startsWith('http') ? request.student.github : `https://${request.student.github}`}
@@ -698,7 +698,7 @@ export default function TeacherLandingPage() {
                             <span>View GitHub Profile</span>
                           </a>
                         ) : (
-                          <span className="text-sm text-gray-400">No GitHub profile</span>
+                          <span className="text-sm text-gray-400 dark:text-gray-500">No GitHub profile</span>
                         )}
                         <div className="flex space-x-2">
                           {request.status === 'pending' && (
@@ -740,7 +740,7 @@ export default function TeacherLandingPage() {
                           {request.status !== 'pending' && (
                             <button 
                               onClick={() => navigate(`/request-details/${request.id}`)}
-                              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
                               View Details
                             </button>
@@ -764,25 +764,25 @@ export default function TeacherLandingPage() {
               ) : activeProjects.length === 0 ? (
                 <div className="text-center py-12">
                   <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No active projects yet.</p>
-                  <p className="text-sm text-gray-400 mt-1">Approved project requests will appear here.</p>
+                  <p className="text-gray-500 dark:text-gray-400">No active projects yet.</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Approved project requests will appear here.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {activeProjects.map((project) => (
-                    <div key={project.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div key={project.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-md transition-shadow">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900">{project.project.title}</h3>
-                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{project.project.title}</h3>
+                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                               Active
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 mb-1">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
                             Student: <span className="font-medium">{project.student.name}</span> ({project.student.regNo})
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
                             Duration: {project.project.duration} • Started: {new Date(project.submittedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </p>
                         </div>
@@ -795,7 +795,7 @@ export default function TeacherLandingPage() {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {(project.project.techStack || []).map((tech, idx) => (
-                          <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                          <span key={idx} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-full">
                             {tech}
                           </span>
                         ))}
@@ -811,8 +811,8 @@ export default function TeacherLandingPage() {
           {activeTab === 'students' && (
             <div className="p-6">
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Discover Potential Students</h3>
-                <p className="text-sm text-gray-600">Browse student profiles to find promising candidates for your research areas</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Discover Potential Students</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Browse student profiles to find promising candidates for your research areas</p>
               </div>
               {loadingStudents ? (
                 <div className="flex justify-center py-12">
@@ -821,45 +821,45 @@ export default function TeacherLandingPage() {
               ) : studentPool.length === 0 ? (
                 <div className="text-center py-12">
                   <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No students found.</p>
-                  <p className="text-sm text-gray-400 mt-1">Student profiles will appear here as they register.</p>
+                  <p className="text-gray-500 dark:text-gray-400">No students found.</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Student profiles will appear here as they register.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {studentPool.map((student, idx) => (
-                    <div key={student.id || idx} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div key={student.id || idx} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-md transition-shadow">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-4 flex-1">
                           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
                             {student.name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900">{student.name}</h3>
-                            <p className="text-sm text-gray-600">{student.regNo} • {student.year} • CGPA: {student.cgpa}</p>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{student.name}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">{student.regNo} • {student.year} • CGPA: {student.cgpa}</p>
                             <div className="mt-3 grid grid-cols-2 gap-4">
                               <div>
-                                <p className="text-xs text-gray-500 font-medium mb-1">Skills</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Skills</p>
                                 <div className="flex flex-wrap gap-1">
                                   {(student.skills || []).map((skill, skillIdx) => (
-                                    <span key={skillIdx} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                    <span key={skillIdx} className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full">
                                       {skill}
                                     </span>
                                   ))}
                                   {(student.skills || []).length === 0 && (
-                                    <span className="text-gray-400 text-xs">No skills listed</span>
+                                    <span className="text-gray-400 dark:text-gray-500 text-xs">No skills listed</span>
                                   )}
                                 </div>
                               </div>
                               <div>
-                                <p className="text-xs text-gray-500 font-medium mb-1">Interests</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">Interests</p>
                                 <div className="flex flex-wrap gap-1">
                                   {(student.interests || []).map((interest, interestIdx) => (
-                                    <span key={interestIdx} className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">
+                                    <span key={interestIdx} className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs rounded-full">
                                       {interest}
                                     </span>
                                   ))}
                                   {(student.interests || []).length === 0 && (
-                                    <span className="text-gray-400 text-xs">No interests listed</span>
+                                    <span className="text-gray-400 dark:text-gray-500 text-xs">No interests listed</span>
                                   )}
                                 </div>
                               </div>
@@ -872,7 +872,7 @@ export default function TeacherLandingPage() {
                               href={student.github.startsWith('http') ? student.github : `https://${student.github}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors text-center"
+                              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-center"
                             >
                               View Profile
                             </a>

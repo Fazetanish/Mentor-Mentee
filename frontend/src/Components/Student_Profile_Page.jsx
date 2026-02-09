@@ -231,17 +231,17 @@ export default function StudentProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-8 shadow-xl">
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-xl">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading profile...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">Loading profile...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -254,12 +254,12 @@ export default function StudentProfilePage() {
           </button>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-2xl dark:shadow-gray-900/50 overflow-hidden">
           {/* Profile Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 px-8 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 bg-white dark:bg-gray-200 rounded-full flex items-center justify-center">
                   <User className="w-10 h-10 text-blue-600" />
                 </div>
                 <div className="text-white">
@@ -271,7 +271,7 @@ export default function StudentProfilePage() {
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all flex items-center space-x-2 shadow-lg"
+                    className="px-6 py-3 bg-white dark:bg-gray-200 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 dark:hover:bg-gray-300 transition-all flex items-center space-x-2 shadow-lg"
                   >
                     <Edit3 className="w-5 h-5" />
                     <span>Edit Profile</span>
@@ -291,7 +291,7 @@ export default function StudentProfilePage() {
                     </button>
                     <button
                       onClick={handleSubmit}
-                      className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all flex items-center space-x-2 shadow-lg"
+                      className="px-6 py-3 bg-white dark:bg-gray-200 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 dark:hover:bg-gray-300 transition-all flex items-center space-x-2 shadow-lg"
                     >
                       <Save className="w-5 h-5" />
                       <span>Save Changes</span>
@@ -305,23 +305,23 @@ export default function StudentProfilePage() {
           {/* Messages */}
           <div className="px-8 pt-6">
             {successMessage && (
-              <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 flex items-start space-x-3 mb-6 animate-pulse">
-                <Award className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className="bg-green-50 dark:bg-green-900/30 border-2 border-green-500 dark:border-green-600 rounded-lg p-4 flex items-start space-x-3 mb-6 animate-pulse">
+                <Award className="w-6 h-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-green-800">Success!</h3>
-                  <p className="text-green-700 text-sm">{successMessage}</p>
+                  <h3 className="font-semibold text-green-800 dark:text-green-300">Success!</h3>
+                  <p className="text-green-700 dark:text-green-400 text-sm">{successMessage}</p>
                 </div>
               </div>
             )}
 
             {errorMessage && (
-              <div className="bg-red-50 border-2 border-red-500 rounded-lg p-4 flex items-start space-x-3 mb-6">
+              <div className="bg-red-50 dark:bg-red-900/30 border-2 border-red-500 dark:border-red-600 rounded-lg p-4 flex items-start space-x-3 mb-6">
                 <div className="w-6 h-6 flex-shrink-0 mt-0.5 bg-red-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-bold">!</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-red-800">Error</h3>
-                  <p className="text-red-700 text-sm">{errorMessage}</p>
+                  <h3 className="font-semibold text-red-800 dark:text-red-300">Error</h3>
+                  <p className="text-red-700 dark:text-red-400 text-sm">{errorMessage}</p>
                 </div>
               </div>
             )}
@@ -331,18 +331,18 @@ export default function StudentProfilePage() {
           <div className="px-8 py-6 space-y-8">
             {/* Basic Information Section */}
             <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
-                <User className="w-6 h-6 text-blue-600" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center space-x-2">
+                <User className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <span>Basic Information</span>
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="registration_no" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="registration_no" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Registration Number *
                   </label>
                   {isEditing ? (
                     <div className="relative">
-                      <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         id="registration_no"
                         name="registration_no"
@@ -350,30 +350,30 @@ export default function StudentProfilePage() {
                         value={formData.registration_no}
                         onChange={handleChange}
                         disabled={true} // Registration number should not be editable
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-gray-100 cursor-not-allowed"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-gray-100 dark:bg-gray-600 dark:text-gray-100 cursor-not-allowed"
                         placeholder="23FE10CSE00534"
                       />
                     </div>
                   ) : (
-                    <p className="text-gray-900 font-medium py-3 px-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-900 dark:text-gray-100 font-medium py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.registration_no || 'Not set'}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="year" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="year" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Year *
                   </label>
                   {isEditing ? (
                     <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <select
                         id="year"
                         name="year"
                         value={formData.year}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition appearance-none bg-white"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition appearance-none bg-white dark:bg-gray-700 dark:text-gray-100"
                       >
                         <option value="">Select Year</option>
                         <option value="1">1st Year</option>
@@ -384,43 +384,43 @@ export default function StudentProfilePage() {
                       </select>
                     </div>
                   ) : (
-                    <p className="text-gray-900 font-medium py-3 px-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-900 dark:text-gray-100 font-medium py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.year ? `${formData.year}${['st', 'nd', 'rd', 'th', 'th'][formData.year - 1]} Year` : 'Not set'}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="section" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="section" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Section
                   </label>
                   {isEditing ? (
                     <div className="relative">
-                      <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         id="section"
                         name="section"
                         type="text"
                         value={formData.section}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:text-gray-100"
                         placeholder="A"
                       />
                     </div>
                   ) : (
-                    <p className="text-gray-900 font-medium py-3 px-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-900 dark:text-gray-100 font-medium py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.section || 'Not set'}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     CGPA
                   </label>
                   {isEditing ? (
                     <div className="relative">
-                      <Award className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Award className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         id="cgpa"
                         name="cgpa"
@@ -430,12 +430,12 @@ export default function StudentProfilePage() {
                         max="10"
                         value={formData.cgpa}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:text-gray-100"
                         placeholder="8.50"
                       />
                     </div>
                   ) : (
-                    <p className="text-gray-900 font-medium py-3 px-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-900 dark:text-gray-100 font-medium py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.cgpa || 'Not set'}
                     </p>
                   )}
@@ -445,45 +445,45 @@ export default function StudentProfilePage() {
 
             {/* Skills Section */}
             <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
-                <Lightbulb className="w-6 h-6 text-blue-600" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center space-x-2">
+                <Lightbulb className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <span>Skills & Technologies</span>
               </h2>
               {isEditing ? (
                 <div className="space-y-3">
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Lightbulb className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Lightbulb className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         type="text"
                         value={currentSkill}
                         onChange={(e) => setCurrentSkill(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:text-gray-100"
                         placeholder="e.g., JavaScript, Python, React"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={addSkill}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 font-medium"
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 transition flex items-center gap-2 font-medium"
                     >
                       <Plus className="w-5 h-5" />
                       Add
                     </button>
                   </div>
                   {formData.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex flex-wrap gap-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.skills.map((skill, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center gap-1 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                          className="inline-flex items-center gap-1 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium"
                         >
                           {skill}
                           <button
                             type="button"
                             onClick={() => removeSkill(skill)}
-                            className="hover:bg-blue-200 rounded-full p-0.5 transition"
+                            className="hover:bg-blue-200 dark:hover:bg-blue-800/50 rounded-full p-0.5 transition"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -493,18 +493,18 @@ export default function StudentProfilePage() {
                   )}
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
+                <div className="flex flex-wrap gap-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg min-h-[80px]">
                   {formData.skills.length > 0 ? (
                     formData.skills.map((skill, index) => (
                       <span
                         key={index}
-                        className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                        className="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium"
                       >
                         {skill}
                       </span>
                     ))
                   ) : (
-                    <p className="text-gray-500 italic">No skills added yet</p>
+                    <p className="text-gray-500 dark:text-gray-400 italic">No skills added yet</p>
                   )}
                 </div>
               )}
@@ -512,45 +512,45 @@ export default function StudentProfilePage() {
 
             {/* Interests Section */}
             <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
-                <BookOpen className="w-6 h-6 text-blue-600" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center space-x-2">
+                <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <span>Areas of Interest</span>
               </h2>
               {isEditing ? (
                 <div className="space-y-3">
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Lightbulb className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Lightbulb className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         type="text"
                         value={currentInterest}
                         onChange={(e) => setCurrentInterest(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && addInterest()}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:text-gray-100"
                         placeholder="e.g., Machine Learning, Web Development"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={addInterest}
-                      className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2 font-medium"
+                      className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 transition flex items-center gap-2 font-medium"
                     >
                       <Plus className="w-5 h-5" />
                       Add
                     </button>
                   </div>
                   {formData.interest.length > 0 && (
-                    <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex flex-wrap gap-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.interest.map((interest, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center gap-1 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium"
+                          className="inline-flex items-center gap-1 px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium"
                         >
                           {interest}
                           <button
                             type="button"
                             onClick={() => removeInterest(interest)}
-                            className="hover:bg-indigo-200 rounded-full p-0.5 transition"
+                            className="hover:bg-indigo-200 dark:hover:bg-indigo-800/50 rounded-full p-0.5 transition"
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -560,18 +560,18 @@ export default function StudentProfilePage() {
                   )}
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-lg min-h-[80px]">
+                <div className="flex flex-wrap gap-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg min-h-[80px]">
                   {formData.interest.length > 0 ? (
                     formData.interest.map((interest, index) => (
                       <span
                         key={index}
-                        className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium"
+                        className="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium"
                       >
                         {interest}
                       </span>
                     ))
                   ) : (
-                    <p className="text-gray-500 italic">No interests added yet</p>
+                    <p className="text-gray-500 dark:text-gray-400 italic">No interests added yet</p>
                   )}
                 </div>
               )}
@@ -579,114 +579,114 @@ export default function StudentProfilePage() {
 
             {/* Social Links Section */}
             <div>
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
-                <Globe className="w-6 h-6 text-blue-600" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center space-x-2">
+                <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <span>Social & Portfolio Links</span>
               </h2>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="github" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="github" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     GitHub Profile
                   </label>
                   {isEditing ? (
                     <div className="relative">
-                      <Github className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Github className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         id="github"
                         name="github"
                         type="url"
                         value={formData.github}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:text-gray-100"
                         placeholder="https://github.com/yourusername"
                       />
                     </div>
                   ) : (
-                    <div className="py-3 px-4 bg-gray-50 rounded-lg">
+                    <div className="py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.github ? (
                         <a 
                           href={formData.github} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center space-x-2"
                         >
                           <Github className="w-4 h-4" />
                           <span>{formData.github}</span>
                         </a>
                       ) : (
-                        <p className="text-gray-500 italic">Not set</p>
+                        <p className="text-gray-500 dark:text-gray-400 italic">Not set</p>
                       )}
                     </div>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     LinkedIn Profile
                   </label>
                   {isEditing ? (
                     <div className="relative">
-                      <Linkedin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Linkedin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         id="linkedin"
                         name="linkedin"
                         type="url"
                         value={formData.linkedin}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:text-gray-100"
                         placeholder="https://linkedin.com/in/yourusername"
                       />
                     </div>
                   ) : (
-                    <div className="py-3 px-4 bg-gray-50 rounded-lg">
+                    <div className="py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.linkedin ? (
                         <a 
                           href={formData.linkedin} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center space-x-2"
                         >
                           <Linkedin className="w-4 h-4" />
                           <span>{formData.linkedin}</span>
                         </a>
                       ) : (
-                        <p className="text-gray-500 italic">Not set</p>
+                        <p className="text-gray-500 dark:text-gray-400 italic">Not set</p>
                       )}
                     </div>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="portfolio" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="portfolio" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Portfolio / Personal Website
                   </label>
                   {isEditing ? (
                     <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         id="portfolio"
                         name="portfolio"
                         type="url"
                         value={formData.portfolio}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:text-gray-100"
                         placeholder="https://yourportfolio.com"
                       />
                     </div>
                   ) : (
-                    <div className="py-3 px-4 bg-gray-50 rounded-lg">
+                    <div className="py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {formData.portfolio ? (
                         <a 
                           href={formData.portfolio} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center space-x-2"
                         >
                           <Globe className="w-4 h-4" />
                           <span>{formData.portfolio}</span>
                         </a>
                       ) : (
-                        <p className="text-gray-500 italic">Not set</p>
+                        <p className="text-gray-500 dark:text-gray-400 italic">Not set</p>
                       )}
                     </div>
                   )}
@@ -697,7 +697,7 @@ export default function StudentProfilePage() {
 
           {/* Footer with action buttons when editing */}
           {isEditing && (
-            <div className="px-8 py-6 bg-gray-50 border-t border-gray-200">
+            <div className="px-8 py-6 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={() => {
@@ -706,7 +706,7 @@ export default function StudentProfilePage() {
                     setSuccessMessage('');
                     setErrorMessage('');
                   }}
-                  className="px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all font-medium"
+                  className="px-6 py-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-medium"
                 >
                   Cancel
                 </button>

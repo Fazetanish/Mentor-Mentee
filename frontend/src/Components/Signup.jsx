@@ -121,71 +121,71 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl p-8 space-y-6">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-2xl p-8 space-y-6">
           <div className="text-center space-y-2">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full mb-2">
               <User className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
-            <p className="text-gray-600">Sign up to get started</p>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Create Account</h1>
+            <p className="text-gray-600 dark:text-gray-300">Sign up to get started</p>
           </div>
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                 Full Name
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   id="fullName"
                   name="fullName"
                   type="text"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                   placeholder="John Doe"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   id="email"
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition dark:text-gray-500 dark:hover:text-gray-300"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -197,37 +197,37 @@ export default function SignUpPage() {
                       <div
                         key={level}
                         className={`h-1 flex-1 rounded-full transition-all ${
-                          level <= strength.strength ? strength.color : 'bg-gray-200'
+                          level <= strength.strength ? strength.color : 'bg-gray-200 dark:bg-gray-600'
                         }`}
                       />
                     ))}
                   </div>
                   {strength.label && (
-                    <p className="text-xs text-gray-600">Password strength: {strength.label}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">Password strength: {strength.label}</p>
                   )}
                 </div>
               )}
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                 Confirm Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition dark:text-gray-500 dark:hover:text-gray-300"
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -241,7 +241,7 @@ export default function SignUpPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                 I am a
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -250,8 +250,8 @@ export default function SignUpPage() {
                   onClick={() => setFormData({ ...formData, userType: 'student' })}
                   className={`px-4 py-3 border-2 rounded-lg font-medium transition-all ${
                     formData.userType === 'student'
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-300 hover:border-indigo-300 text-gray-700'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                      : 'border-gray-300 hover:border-indigo-300 text-gray-700 dark:border-gray-600 dark:hover:border-indigo-600 dark:text-gray-200'
                   }`}
                 >
                   Student
@@ -261,8 +261,8 @@ export default function SignUpPage() {
                   onClick={() => setFormData({ ...formData, userType: 'teacher' })}
                   className={`px-4 py-3 border-2 rounded-lg font-medium transition-all ${
                     formData.userType === 'teacher'
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-300 hover:border-indigo-300 text-gray-700'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                      : 'border-gray-300 hover:border-indigo-300 text-gray-700 dark:border-gray-600 dark:hover:border-indigo-600 dark:text-gray-200'
                   }`}
                 >
                   Teacher
@@ -278,9 +278,9 @@ export default function SignUpPage() {
             </button>
           </div>
 
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-gray-600 dark:text-gray-300">
             Already have an account?{' '}
-            <button className="text-indigo-600 hover:text-indigo-700 font-medium transition">
+            <button className="text-indigo-600 hover:text-indigo-700 font-medium transition dark:text-indigo-400 dark:hover:text-indigo-300">
               Sign in
             </button>
           </p>
