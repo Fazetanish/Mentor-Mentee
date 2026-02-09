@@ -1,3 +1,5 @@
+require("dotenv").config(); // Load env variables FIRST
+
 const express = require("express");
 const cors = require("cors");
 const { UserRouter } = require("./Routes/User");
@@ -13,4 +15,7 @@ app.use("/user" , UserRouter);
 app.use("/project", ProjectRouter);
 app.use("/teacher" , TeacherRouter);
 
-app.listen(3000);
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+    console.log("Email configured for:", process.env.EMAIL_USER || "NOT SET");
+});
