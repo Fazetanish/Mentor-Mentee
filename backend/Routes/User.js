@@ -623,7 +623,7 @@ UserRouter.get("/students", authJWTMiddleware, async function(req, res) {
     }
 
     try {
-        const students = await Student_Profiles_Model.find()
+        const students = await Student_Profile_Model.find()
             .populate('user_id', 'name email')
             .sort({ cgpa: -1 }); // Sort by CGPA descending
 

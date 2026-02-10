@@ -11,6 +11,7 @@ import TeacherProfileForm from './Components/Teacher_ProfilesForm'
 import TeacherLandingPage from './Components/Teacher_LandingPage'
 import StudentProfilePage from './Components/Student_Profile_Page'
 import RequestDetails from './Components/Student_ViewRequestDetails'
+import FilteredRequestsPage from './Components/Teacher_Filtered_Requests'
 
 
 function App(){
@@ -27,6 +28,7 @@ function App(){
         <Route path='/project-request' element = {<ProjectRequestPage />} />
         <Route path='/student-profile-page' element = {<StudentProfilePage />} />
         <Route path="/request-details/:requestId" element={<RequestDetails />} />
+        <Route path="/all-requests" element={<FilteredRequestsPage />} />
       </Routes>
     </Router>
   </>

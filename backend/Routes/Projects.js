@@ -136,9 +136,38 @@ ProjectRouter.get("/requests/mentor", authJWTMiddleware, async function(req, res
             .populate('student_id', 'name email')
             .sort({ createdAt: -1 });
 
+        // Fetch student profile data for each request
+        const { Student_Profile_Model } = require("../DB/student_profiles");
+        
+        const requestsWithProfiles = await Promise.all(
+            requests.map(async (request) => {
+                const requestObj = request.toObject();
+                
+                // Fetch student profile
+                if (request.student_id?._id) {
+                    const studentProfile = await Student_Profile_Model.findOne({ 
+                        user_id: request.student_id._id 
+                    });
+                    
+                    if (studentProfile) {
+                        requestObj.studentRegNo = studentProfile.registration_no;
+                        requestObj.studentYear = studentProfile.year;
+                        requestObj.studentSemester = studentProfile.semester; // Include semester too
+                        requestObj.studentCgpa = studentProfile.cgpa;
+                        requestObj.studentSkills = studentProfile.skills || [];
+                        requestObj.studentInterests = studentProfile.interest || [];
+                        requestObj.studentGithub = studentProfile.github || '';
+                        requestObj.studentSection = studentProfile.section || '';
+                    }
+                }
+                
+                return requestObj;
+            })
+        );
+
         return res.status(200).json({
             message: "Requests fetched successfully",
-            requests: requests
+            requests: requestsWithProfiles
         });
     } catch (error) {
         console.error(error);

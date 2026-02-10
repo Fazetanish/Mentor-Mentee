@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, BookOpen, Users, CheckCircle, Clock, XCircle, Mail, 
   GraduationCap, FileText, TrendingUp, AlertCircle, Eye, ThumbsUp, 
-  ThumbsDown, MessageSquare, Loader2, X 
+  ThumbsDown, MessageSquare, Loader2, X ,Filter
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -371,36 +371,55 @@ export default function TeacherLandingPage() {
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-2 rounded-lg">
-                <GraduationCap className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">MentorConnect</h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Faculty Mentorship Dashboard</p>
-              </div>
-            </div>
+            <div className="flex items-center justify-between">
+
+            {/* LEFT SIDE */}
             <div className="flex items-center space-x-4">
-              <button 
-                onClick={() => navigate('/teacher-profile')}
-                className="px-4 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-all"
-              >
-                Edit Profile
-              </button>
-              <div className="flex items-center space-x-3">
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{mentorProfile?.name || 'Teacher'}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{mentorProfile?.designation || 'Faculty'}</p>
+                <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-2 rounded-lg">
+                <GraduationCap className="w-8 h-8 text-white" />
                 </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  {(mentorProfile?.name || 'T').split(' ').map(n => n[0]).join('')}
+
+                <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    MentorConnect
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Faculty Mentorship Dashboard
+                </p>
                 </div>
-              </div>
+
+                {/* All Requests button beside MentorConnect */}
+                <button
+                onClick={() => navigate('/all-requests')}
+                className="ml-4 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all flex items-center space-x-2"
+                >
+                <Filter className="w-4 h-4" />
+                <span>All Requests</span>
+                </button>
             </div>
-          </div>
+
+            {/* RIGHT SIDE */}
+            <div className="flex items-center space-x-3">
+                <div className="text-right">
+                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    {mentorProfile?.name || 'Teacher'}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {mentorProfile?.designation || 'Faculty'}
+                </p>
+                </div>
+
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center text-white font-semibold">
+                {(mentorProfile?.name || 'T')
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')}
+                </div>
+            </div>
+
+            </div>
         </div>
-      </header>
+        </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
