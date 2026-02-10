@@ -8,6 +8,7 @@ export default function StudentProfileForm() {
   const [formData, setFormData] = useState({
     registration_no: '',
     year: '',
+    semester: '',
     section: '',
     cgpa: '',
     skills: [],
@@ -78,6 +79,11 @@ export default function StudentProfileForm() {
       return;
     }
 
+    if (formData.semester < 1 || formData.semester > 10) {
+      setErrorMessage('Semester must be between 1 and 10');
+      return;
+    }
+
     if (formData.cgpa && (formData.cgpa < 0 || formData.cgpa > 10)) {
       setErrorMessage('CGPA must be between 0 and 10');
       return;
@@ -89,6 +95,7 @@ export default function StudentProfileForm() {
       const res = await axios.post("http://localhost:3000/user/student/profile", {
           ...formData,
           year: parseInt(formData.year),
+          semester: parseInt(formData.semester),
           cgpa: formData.cgpa ? parseFloat(formData.cgpa) : undefined
       }, {
           headers: {
@@ -175,6 +182,29 @@ export default function StudentProfileForm() {
                     <option value="3">3rd Year</option>
                     <option value="4">4th Year</option>
                     <option value="5">5th Year</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="semester" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Semester <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  <select
+                    id="semester"
+                    name="semester"
+                    value={formData.semester}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                  >
+                    <option value="">Select Semester</option>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((sem) => (
+                      <option key={sem} value={sem}>
+                        Semester {sem}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

@@ -6,6 +6,7 @@ const Student_Profiles = new Schema({
     user_id: { type: ObjectId, required: true, ref: 'users', unique: true },
     registration_no: { type: String, required: true, unique: true, trim: true },
     year: { type: Number, required: true, min: 1, max: 5 },
+    semester: { type: Number, required: true, min: 1, max: 10 }, // NEW FIELD
     section: { type: String, trim: true },
     cgpa: { type: Number, min: 0, max: 10 },
     skills: [{ type: String, trim: true }],

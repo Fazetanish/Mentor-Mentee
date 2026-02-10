@@ -359,6 +359,7 @@ UserRouter.post("/student/profile", authJWTMiddleware, async function(req, res) 
     const requiredBody = z.object({
         registration_no: z.string().min(1, "Registration number is required").trim(),
         year: z.number().min(1).max(5),
+        semester: z.number().min(1).max(10), // NEW: Required semester field
         section: z.string().optional(),
         cgpa: z.number().min(0).max(10).optional(),
         skills: z.array(z.string()).optional().default([]),
@@ -386,7 +387,7 @@ UserRouter.post("/student/profile", authJWTMiddleware, async function(req, res) 
     }
 
     const { 
-        registration_no, year, section, cgpa, 
+        registration_no, year, semester, section, cgpa, // Added semester
         skills, interest, github, linkedin, portfolio 
     } = parsedBody.data;
 
@@ -416,6 +417,7 @@ UserRouter.post("/student/profile", authJWTMiddleware, async function(req, res) 
             user_id: req.user.id,
             registration_no: registration_no,
             year: year,
+            semester: semester, // NEW: Added semester
             section: section,
             cgpa: cgpa,
             skills: skills,
@@ -480,6 +482,7 @@ UserRouter.get("/student/profile", authJWTMiddleware, async function(req, res) {
 UserRouter.patch("/student/profile", authJWTMiddleware, async function(req, res) {
     const requiredBody = z.object({
         year: z.number().min(1).max(5).optional(),
+        semester: z.number().min(1).max(10).optional(),
         section: z.string().optional(),
         cgpa: z.number().min(0).max(10).optional(),
         skills: z.array(z.string()).optional(),
@@ -522,10 +525,11 @@ UserRouter.patch("/student/profile", authJWTMiddleware, async function(req, res)
             });
         }
 
-        const { year, section, cgpa, skills, interest, github, linkedin, portfolio } = parsedBody.data;
+        const { year, semester, section, cgpa, skills, interest, github, linkedin, portfolio } = parsedBody.data;
 
         // Update only provided fields
         if (year !== undefined) profile.year = year;
+        if (semester !== undefined) profile.semester = semester;
         if (section !== undefined) profile.section = section;
         if (cgpa !== undefined) profile.cgpa = cgpa;
         if (skills !== undefined) profile.skills = skills;
