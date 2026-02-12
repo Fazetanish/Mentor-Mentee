@@ -179,61 +179,6 @@ ProjectRouter.get("/requests/mentor", authJWTMiddleware, async function(req, res
     }
 });
 
-// Mentor responds to a project request (approve/reject/request changes)
-ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req, res) {
-    const requiredBody = z.object({
-        status: z.enum(["approved", "rejected", "changes_requested"]),
-        mentorFeedback: z.string().optional()
-    });
-
-    const parsedBody = requiredBody.safeParse(req.body);
-    if (!parsedBody.success) {
-        return res.status(400).json({
-            message: "Invalid data",
-            error: parsedBody.error.issues
-        });
-    }
-
-    // Verify user is a teacher
-    if (req.user.role !== "teacher") {
-        return res.status(403).json({
-            message: "Only mentors can respond to project requests"
-        });
-    }
-
-    const { requestId } = req.params;
-    const { status, mentorFeedback } = parsedBody.data;
-
-    try {
-        const request = await Project_Request_Model.findOne({
-            _id: requestId,
-            mentor_id: req.user.id
-        });
-
-        if (!request) {
-            return res.status(404).json({
-                message: "Request not found or you don't have permission"
-            });
-        }
-
-        request.status = status;
-        request.mentorFeedback = mentorFeedback || "";
-        request.respondedAt = new Date();
-        await request.save();
-
-        return res.status(200).json({
-            message: `Request ${status} successfully`,
-            request: request
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: "Something went wrong",
-            error: error.message
-        });
-    }
-});
-
 // Get a single project request by ID
 ProjectRouter.get("/request/:requestId", authJWTMiddleware, async function(req, res) {
     const { requestId } = req.params;
