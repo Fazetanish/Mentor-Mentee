@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Hash, Calendar, BookOpen, Award, Lightbulb, X, Plus, Github, Linkedin, Globe, Save, Edit3, ArrowLeft } from 'lucide-react';
+import { User, Hash, Calendar, BookOpen, Award, Lightbulb, X, Plus, Github, Linkedin, Globe, Save, Edit3, ArrowLeft, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
@@ -11,6 +11,8 @@ export default function StudentProfilePage() {
   const [loading, setLoading] = useState(true);
   const [studentName, setStudentName] = useState('');
   const [studentEmail, setStudentEmail] = useState('');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [formData, setFormData] = useState({
     registration_no: '',
     year: '',
@@ -65,16 +67,16 @@ export default function StudentProfilePage() {
         }
         
         setFormData({
-        registration_no: profile.registration_no || '',
-        year: profile.year?.toString() || '',
-        semester: profile.semester?.toString() || '',
-        section: profile.section || '',
-        cgpa: profile.cgpa?.toString() || '',
-        skills: profile.skills || [],
-        interest: profile.interest || [],
-        github: profile.github || '',
-        linkedin: profile.linkedin || '',
-        portfolio: profile.portfolio || ''
+          registration_no: profile.registration_no || '',
+          year: profile.year?.toString() || '',
+          semester: profile.semester?.toString() || '',
+          section: profile.section || '',
+          cgpa: profile.cgpa?.toString() || '',
+          skills: profile.skills || [],
+          interest: profile.interest || [],
+          github: profile.github || '',
+          linkedin: profile.linkedin || '',
+          portfolio: profile.portfolio || ''
         });
       }
     } catch (error) {
@@ -90,6 +92,47 @@ export default function StudentProfilePage() {
       // 404 means profile not found - user needs to create one, so we don't show error
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Logout function
+  const handleLogout = async () => {
+    try {
+      setLoggingOut(true);
+      const token = localStorage.getItem('authToken');
+      
+      // Optional: Call backend logout endpoint to invalidate token
+      if (token) {
+        try {
+          await axios.post(`${API_BASE_URL}/user/logout`, {}, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        } catch (err) {
+          // Even if backend logout fails, we still clear local storage
+          console.log('Backend logout call failed, proceeding with local logout');
+        }
+      }
+      
+      // Clear all auth-related data from localStorage
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('userId');
+      
+      // Clear any session storage as well
+      sessionStorage.clear();
+      
+      // Redirect to login page
+      navigate('/signin', { replace: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if there's an error, clear local storage and redirect
+      localStorage.removeItem('authToken');
+      navigate('/signin', { replace: true });
+    } finally {
+      setLoggingOut(false);
+      setShowLogoutModal(false);
     }
   };
 
@@ -152,8 +195,8 @@ export default function StudentProfilePage() {
     setErrorMessage('');
 
     // Validation
-    if (!formData.registration_no || !formData.year) {
-      setErrorMessage('Registration number and year are required fields');
+    if (!formData.registration_no || !formData.year || !formData.semester) {
+      setErrorMessage('Registration number, year, and semester are required fields');
       return;
     }
 
@@ -163,8 +206,8 @@ export default function StudentProfilePage() {
     }
 
     if (formData.semester < 1 || formData.semester > 10) {
-        setErrorMessage('Semester must be between 1 and 10');
-        return;
+      setErrorMessage('Semester must be between 1 and 10');
+      return;
     }
 
     if (formData.cgpa && (formData.cgpa < 0 || formData.cgpa > 10)) {
@@ -250,6 +293,49 @@ export default function StudentProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-8 px-4">
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full mx-auto mb-4">
+              <LogOut className="w-8 h-8 text-red-600 dark:text-red-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 text-center mb-2">
+              Confirm Logout
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
+              Are you sure you want to log out? You will need to sign in again to access your profile.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                disabled={loggingOut}
+                className="flex-1 px-4 py-3 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="flex-1 px-4 py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center justify-center disabled:opacity-50"
+              >
+                {loggingOut ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Logging out...
+                  </>
+                ) : (
+                  <>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -344,6 +430,7 @@ export default function StudentProfilePage() {
                 <span>Basic Information</span>
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Registration Number */}
                 <div className="space-y-2">
                   <label htmlFor="registration_no" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Registration Number *
@@ -357,7 +444,7 @@ export default function StudentProfilePage() {
                         type="text"
                         value={formData.registration_no}
                         onChange={handleChange}
-                        disabled={true} // Registration number should not be editable
+                        disabled={true}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-gray-100 dark:bg-gray-600 dark:text-gray-100 cursor-not-allowed"
                         placeholder="23FE10CSE00534"
                       />
@@ -369,6 +456,7 @@ export default function StudentProfilePage() {
                   )}
                 </div>
 
+                {/* Year */}
                 <div className="space-y-2">
                   <label htmlFor="year" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Year *
@@ -398,35 +486,37 @@ export default function StudentProfilePage() {
                   )}
                 </div>
 
+                {/* Semester */}
                 <div className="space-y-2">
-                    <label htmlFor="semester" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                        Semester *
-                    </label>
-                    {isEditing ? (
-                        <div className="relative">
-                        <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
-                        <select
-                            id="semester"
-                            name="semester"
-                            value={formData.semester}
-                            onChange={handleChange}
-                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition appearance-none bg-white dark:bg-gray-700 dark:text-gray-100"
-                        >
-                            <option value="">Select Semester</option>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((sem) => (
-                            <option key={sem} value={sem}>
-                                Semester {sem}
-                            </option>
-                            ))}
-                        </select>
-                        </div>
-                    ) : (
-                        <p className="text-gray-900 dark:text-gray-100 font-medium py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        {formData.semester ? `Semester ${formData.semester}` : 'Not set'}
-                        </p>
-                    )}
+                  <label htmlFor="semester" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    Semester *
+                  </label>
+                  {isEditing ? (
+                    <div className="relative">
+                      <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                      <select
+                        id="semester"
+                        name="semester"
+                        value={formData.semester}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition appearance-none bg-white dark:bg-gray-700 dark:text-gray-100"
+                      >
+                        <option value="">Select Semester</option>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((sem) => (
+                          <option key={sem} value={sem}>
+                            Semester {sem}
+                          </option>
+                        ))}
+                      </select>
                     </div>
+                  ) : (
+                    <p className="text-gray-900 dark:text-gray-100 font-medium py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      {formData.semester ? `Semester ${formData.semester}` : 'Not set'}
+                    </p>
+                  )}
+                </div>
 
+                {/* Section */}
                 <div className="space-y-2">
                   <label htmlFor="section" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Section
@@ -451,6 +541,7 @@ export default function StudentProfilePage() {
                   )}
                 </div>
 
+                {/* CGPA */}
                 <div className="space-y-2">
                   <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     CGPA
@@ -621,6 +712,7 @@ export default function StudentProfilePage() {
                 <span>Social & Portfolio Links</span>
               </h2>
               <div className="space-y-4">
+                {/* GitHub */}
                 <div className="space-y-2">
                   <label htmlFor="github" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     GitHub Profile
@@ -657,6 +749,7 @@ export default function StudentProfilePage() {
                   )}
                 </div>
 
+                {/* LinkedIn */}
                 <div className="space-y-2">
                   <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     LinkedIn Profile
@@ -693,6 +786,7 @@ export default function StudentProfilePage() {
                   )}
                 </div>
 
+                {/* Portfolio */}
                 <div className="space-y-2">
                   <label htmlFor="portfolio" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Portfolio / Personal Website
@@ -753,6 +847,29 @@ export default function StudentProfilePage() {
                 >
                   <Save className="w-5 h-5" />
                   <span>Save Changes</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Logout Section */}
+          {!isEditing && (
+            <div className="px-8 py-6 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Signed in as <span className="font-medium">{studentEmail}</span>
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Need to switch accounts? Log out and sign in with a different account.
+                  </p>
+                </div>
+                <button
+                onClick={() => setShowLogoutModal(true)}
+                className="px-6 py-3 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-all font-medium flex items-center space-x-2 cursor-pointer hover:scale-105 active:scale-95"
+                >
+                <LogOut className="w-5 h-5" />
+                <span>Logout</span>
                 </button>
               </div>
             </div>
