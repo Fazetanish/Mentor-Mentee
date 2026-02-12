@@ -2,6 +2,7 @@ const express = require("express");
 const { Router } = require("express");
 const ProjectRouter = Router();
 const { UserModel } = require("../DB/user");
+const { NotificationModel } = require("../DB/notifications");
 const { Project_Request_Model } = require("../DB/project_requests");
 
 require("dotenv").config();
@@ -258,6 +259,105 @@ ProjectRouter.get("/request/:requestId", authJWTMiddleware, async function(req, 
 
         return res.status(200).json({
             message: "Request fetched successfully",
+            request: request
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+});
+
+ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req, res) {
+    const requiredBody = z.object({
+        status: z.enum(["approved", "rejected", "changes_requested"]),
+        mentorFeedback: z.string().optional()
+    });
+
+    const parsedBody = requiredBody.safeParse(req.body);
+    if (!parsedBody.success) {
+        return res.status(400).json({
+            message: "Invalid data",
+            error: parsedBody.error.issues
+        });
+    }
+
+    // Verify user is a teacher
+    if (req.user.role !== "teacher") {
+        return res.status(403).json({
+            message: "Only mentors can respond to project requests"
+        });
+    }
+
+    const { requestId } = req.params;
+    const { status, mentorFeedback } = parsedBody.data;
+
+    try {
+        const request = await Project_Request_Model.findOne({
+            _id: requestId,
+            mentor_id: req.user.id
+        }).populate('mentor_id', 'name email');
+
+        if (!request) {
+            return res.status(404).json({
+                message: "Request not found or you don't have permission to respond"
+            });
+        }
+
+        // Update the request
+        request.status = status;
+        request.mentorFeedback = mentorFeedback || '';
+        request.respondedAt = new Date();
+        await request.save();
+
+        // Get mentor name for notification
+        const { UserModel } = require("../DB/user");
+        const mentor = await UserModel.findById(req.user.id);
+        const mentorName = mentor?.name || 'Your mentor';
+
+        // Create notification for the student
+        let notificationType, notificationTitle, notificationMessage;
+
+        switch (status) {
+            case 'approved':
+                notificationType = 'request_approved';
+                notificationTitle = '🎉 Project Request Approved!';
+                notificationMessage = `Great news! ${mentorName} has approved your project request "${request.projectTitle}". You can now start working on your project.`;
+                break;
+            case 'rejected':
+                notificationType = 'request_rejected';
+                notificationTitle = '❌ Project Request Declined';
+                notificationMessage = `${mentorName} has declined your project request "${request.projectTitle}".${mentorFeedback ? ' Please review their feedback.' : ''}`;
+                break;
+            case 'changes_requested':
+                notificationType = 'request_changes';
+                notificationTitle = '📝 Changes Requested';
+                notificationMessage = `${mentorName} has requested changes to your project request "${request.projectTitle}". Please review their feedback and update your proposal.`;
+                break;
+            default:
+                notificationType = 'general';
+                notificationTitle = 'Project Request Update';
+                notificationMessage = `Your project request "${request.projectTitle}" has been updated.`;
+        }
+
+        // Create the notification
+        await NotificationModel.create({
+            user_id: request.student_id,
+            type: notificationType,
+            title: notificationTitle,
+            message: notificationMessage,
+            data: {
+                request_id: request._id,
+                mentor_name: mentorName,
+                project_title: request.projectTitle,
+                feedback: mentorFeedback || ''
+            }
+        });
+
+        return res.status(200).json({
+            message: `Request ${status.replace('_', ' ')} successfully`,
             request: request
         });
     } catch (error) {

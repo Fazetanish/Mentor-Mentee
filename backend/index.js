@@ -1,19 +1,21 @@
-require("dotenv").config(); // Load env variables FIRST
+require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
 const { UserRouter } = require("./Routes/User");
 const { ProjectRouter } = require("./Routes/Projects");
 const { TeacherRouter } = require("./Routes/Teacher");
+const { NotificationRouter } = require("./Routes/Notifications");
 
 const app = express();
 
-app.use(express.json())
+app.use(express.json());
 app.use(cors());
 
-app.use("/user" , UserRouter);
+app.use("/user", UserRouter);
 app.use("/project", ProjectRouter);
-app.use("/teacher" , TeacherRouter);
+app.use("/teacher", TeacherRouter);
+app.use("/notifications", NotificationRouter);
 
 app.listen(3000, () => {
     console.log("Server running on port 3000");
