@@ -17,7 +17,7 @@ import StudentNotifications from './Components/Student_Notifications'
 
 function App(){
   return <>
-    <Router>
+    <Router basename="/Mentor-Mentee">
       <Routes>
         <Route path='/' element = {<Dashboard />} />
         <Route path='/signin' element = {<SignInPage /> } />
