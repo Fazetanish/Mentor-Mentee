@@ -6,6 +6,8 @@ const { UserRouter } = require("./Routes/User");
 const { ProjectRouter } = require("./Routes/Projects");
 const { TeacherRouter } = require("./Routes/Teacher");
 const { NotificationRouter } = require("./Routes/Notifications");
+const PORT = process.env.PORT || 3000;
+
 
 const app = express();
 
@@ -17,7 +19,7 @@ app.use("/project", ProjectRouter);
 app.use("/teacher", TeacherRouter);
 app.use("/notifications", NotificationRouter);
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log("Server running on port 3000");
     console.log("Email configured for:", process.env.EMAIL_USER || "NOT SET");
 });
