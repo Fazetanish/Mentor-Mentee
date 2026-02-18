@@ -19,14 +19,14 @@ A comprehensive web application that connects students with faculty mentors at M
 - **Feedback System** - Provide feedback to students on their project proposals
 
 ### General Features
-- 🌓 **Dark/Light Theme** - Toggle between dark and light modes with system preference detection
-- 📱 **Responsive Design** - Mobile-friendly interface using Tailwind CSS
-- 🔒 **Secure Authentication** - JWT-based authentication with bcrypt password hashing
-- 📧 **Email Notifications** - OTP verification via Gmail SMTP
+- **Dark/Light Theme** - Toggle between dark and light modes with system preference detection
+-  **Responsive Design** - Mobile-friendly interface using Tailwind CSS
+- **Secure Authentication** - JWT-based authentication with bcrypt password hashing
+-  **Email Notifications** - OTP verification via Gmail SMTP
 
 ---
 
-## 🚀 Running the Project Locally
+##  Running the Project Locally
 
 ### Prerequisites
 
@@ -100,7 +100,7 @@ cd Mentor-Mentee
    ```
    Server running on port 3000
    Email configured for: your-email@gmail.com
-   ✅ Email server is ready to send messages
+   Email server is ready to send messages
    ```
 
 ### Step 3: Frontend Setup
@@ -130,7 +130,7 @@ Open your browser and navigate to:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 Mentor-Mentee/
@@ -174,7 +174,7 @@ Mentor-Mentee/
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 | Technology | Purpose |
@@ -201,7 +201,7 @@ Mentor-Mentee/
 
 ---
 
-## 📡 API Endpoints
+##  API Endpoints
 
 ### Authentication
 | Method | Endpoint | Description |
