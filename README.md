@@ -1,8 +1,8 @@
-# 🎓 Mentor-Mentee Platform
+# Mentor-Mentee Platform
 
 A comprehensive web application that connects students with faculty mentors at Manipal University. The platform facilitates project mentorship requests, allowing students to find the right mentor for their academic projects and enabling faculty to manage their mentorship capacity.
 
-## ✨ Features
+## Features
 
 ### For Students
 - **User Authentication** - Secure signup/signin with OTP-based email verification (Manipal University email required)
