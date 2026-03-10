@@ -4,6 +4,7 @@ const ProjectRouter = Router();
 const { UserModel } = require("../DB/user");
 const { NotificationModel } = require("../DB/notifications");
 const { Project_Request_Model } = require("../DB/project_requests");
+const { sendProjectStatusEmail } = require("../utils/emailService");
 
 require("dotenv").config();
 const mongoose = require("mongoose");
@@ -153,7 +154,7 @@ ProjectRouter.get("/requests/mentor", authJWTMiddleware, async function(req, res
                     if (studentProfile) {
                         requestObj.studentRegNo = studentProfile.registration_no;
                         requestObj.studentYear = studentProfile.year;
-                        requestObj.studentSemester = studentProfile.semester; // Include semester too
+                        requestObj.studentSemester = studentProfile.semester;
                         requestObj.studentCgpa = studentProfile.cgpa;
                         requestObj.studentSkills = studentProfile.skills || [];
                         requestObj.studentInterests = studentProfile.interest || [];
@@ -215,6 +216,7 @@ ProjectRouter.get("/request/:requestId", authJWTMiddleware, async function(req, 
     }
 });
 
+// Mentor responds to a project request (approve / reject / request changes)
 ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req, res) {
     const requiredBody = z.object({
         status: z.enum(["approved", "rejected", "changes_requested"]),
@@ -258,7 +260,6 @@ ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req
         await request.save();
 
         // Get mentor name for notification
-        const { UserModel } = require("../DB/user");
         const mentor = await UserModel.findById(req.user.id);
         const mentorName = mentor?.name || 'Your mentor';
 
@@ -287,7 +288,7 @@ ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req
                 notificationMessage = `Your project request "${request.projectTitle}" has been updated.`;
         }
 
-        // Create the notification
+        // Create the in-app notification
         await NotificationModel.create({
             user_id: request.student_id,
             type: notificationType,
@@ -300,6 +301,24 @@ ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req
                 feedback: mentorFeedback || ''
             }
         });
+
+        // ──────────────────────────────────────────────
+        //  NEW: Send email notification to the student
+        // ──────────────────────────────────────────────
+        const student = await UserModel.findById(request.student_id);
+        if (student?.email) {
+            // Fire-and-forget — don't await so the API response is not delayed
+            sendProjectStatusEmail({
+                toEmail: student.email,
+                status: status,
+                studentName: student.name || "Student",
+                mentorName: mentorName,
+                projectTitle: request.projectTitle,
+                mentorFeedback: mentorFeedback || "",
+            }).catch((err) =>
+                console.error("📧 Email send error (non-blocking):", err.message)
+            );
+        }
 
         return res.status(200).json({
             message: `Request ${status.replace('_', ' ')} successfully`,
