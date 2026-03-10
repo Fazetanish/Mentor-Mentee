@@ -6,6 +6,7 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:3000';
 
 export default function ProjectRequestPage() {
+  // Steps are now 1=Project Details, 2=Methodology, 3=Goals & Timeline
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedMentor, setSelectedMentor] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -14,10 +15,6 @@ export default function ProjectRequestPage() {
   
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // State for mentors from backend
-  const [availableMentors, setAvailableMentors] = useState([]);
-  const [loadingMentors, setLoadingMentors] = useState(true);
   
   const [formData, setFormData] = useState({
     projectTitle: '',
@@ -44,55 +41,7 @@ export default function ProjectRequestPage() {
     return localStorage.getItem('authToken');
   };
 
-  // Fetch available mentors from backend
-  const fetchMentors = async () => {
-    try {
-      setLoadingMentors(true);
-      const token = getAuthToken();
-      const response = await axios.get(`${API_BASE_URL}/teacher/mentors`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      if (response.data.mentors) {
-        const formattedMentors = response.data.mentors
-          .filter(mentor => mentor.capacity !== 'full') // Only show mentors who can accept requests
-          .map(mentor => ({
-            id: mentor.user_id?._id || mentor._id,
-            name: mentor.user_id?.name || 'Unknown',
-            designation: mentor.designation || 'Faculty',
-            domains: [...(mentor.skills || []), ...(mentor.interest || [])],
-            capacity: mapCapacity(mentor.capacity),
-            projects: mentor.currentProjects || 0,
-            statement: mentor.statement || `Expert in ${(mentor.skills || []).join(', ')}. Looking for motivated students.`,
-            email: mentor.user_id?.email || ''
-          }));
-        setAvailableMentors(formattedMentors);
-      }
-    } catch (err) {
-      console.error('Error fetching mentors:', err);
-      setAvailableMentors([]);
-    } finally {
-      setLoadingMentors(false);
-    }
-  };
-
-  // Helper function to map capacity values
-  const mapCapacity = (capacity) => {
-    switch (capacity) {
-      case 'available':
-        return 'available';
-      case 'limited slots':
-        return 'limited';
-      case 'full':
-        return 'full';
-      default:
-        return 'available';
-    }
-  };
-
-  // Fetch mentors on mount
+  // On mount: require a pre-selected mentor from the landing page
   useEffect(() => {
     const token = getAuthToken();
     if (!token) {
@@ -100,13 +49,22 @@ export default function ProjectRequestPage() {
       return;
     }
     
-    fetchMentors();
-    
-    // Check if a mentor was pre-selected from the landing page
+    // The mentor MUST be passed from the landing page via navigation state
     if (location.state?.selectedMentor) {
       setSelectedMentor(location.state.selectedMentor);
+    } else {
+      // No mentor selected — redirect back to the landing page
+      navigate('/student-landing-page');
     }
   }, [navigate, location.state]);
+
+  const totalSteps = 3;
+
+  const stepLabels = {
+    1: 'Project Details',
+    2: 'Methodology',
+    3: 'Goals & Timeline'
+  };
 
   const techStackOptions = [
     "Python", "JavaScript", "React", "Node.js", "Django", "Flask",
@@ -143,12 +101,7 @@ export default function ProjectRequestPage() {
     const newErrors = {};
 
     if (step === 1) {
-      if (!selectedMentor) {
-        newErrors.mentor = "Please select a mentor";
-      }
-    }
-
-    if (step === 2) {
+      // Project Details
       if (!formData.projectTitle.trim()) {
         newErrors.projectTitle = "Project title is required";
       }
@@ -160,7 +113,8 @@ export default function ProjectRequestPage() {
       }
     }
 
-    if (step === 3) {
+    if (step === 2) {
+      // Methodology & Tech Stack
       if (wordCounts.methodology < 30) {
         newErrors.methodology = "Methodology must be at least 30 words";
       }
@@ -169,7 +123,8 @@ export default function ProjectRequestPage() {
       }
     }
 
-    if (step === 4) {
+    if (step === 3) {
+      // Goals & Timeline
       if (wordCounts.objectives < 20) {
         newErrors.objectives = "Objectives must be at least 20 words";
       }
@@ -195,8 +150,34 @@ export default function ProjectRequestPage() {
     setCurrentStep(prev => prev - 1);
   };
 
+  // Allow clicking on step circles to navigate to that step
+  const handleStepClick = (step) => {
+    // Only allow navigating to steps that have been reached (current or earlier)
+    // OR if all previous steps are valid, allow jumping forward
+    if (step < currentStep) {
+      // Always allow going back
+      setCurrentStep(step);
+    } else if (step === currentStep) {
+      // Already on this step, do nothing
+      return;
+    } else {
+      // Trying to go forward — validate all steps in between
+      let canAdvance = true;
+      for (let s = currentStep; s < step; s++) {
+        if (!validateStep(s)) {
+          canAdvance = false;
+          setCurrentStep(s); // Stop at the first invalid step
+          break;
+        }
+      }
+      if (canAdvance) {
+        setCurrentStep(step);
+      }
+    }
+  };
+
   const handleSubmit = async () => {
-    if (!validateStep(4)) return;
+    if (!validateStep(3)) return;
 
     setIsSubmitting(true);
     setSubmitError('');
@@ -237,14 +218,6 @@ export default function ProjectRequestPage() {
     }
   };
 
-  const getCapacityBadge = (capacity) => {
-    switch(capacity) {
-      case 'available': return <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-300 rounded-full">Available</span>;
-      case 'limited': return <span className="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300 rounded-full">Limited Slots</span>;
-      default: return null;
-    }
-  };
-
   if (showSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center p-4">
@@ -254,7 +227,7 @@ export default function ProjectRequestPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Request Submitted!</h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Your project request has been sent to {selectedMentor.name}. You'll receive a notification once they review your proposal.
+            Your project request has been sent to {selectedMentor?.name}. You'll receive a notification once they review your proposal.
           </p>
           <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 mb-6 text-left">
             <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Next Steps:</p>
@@ -275,6 +248,15 @@ export default function ProjectRequestPage() {
     );
   }
 
+  // Don't render form until mentor is loaded
+  if (!selectedMentor) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       {/* Header */}
@@ -290,7 +272,20 @@ export default function ProjectRequestPage() {
               </button>
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">New Project Request</h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Submit a detailed proposal to your chosen mentor</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Submitting to <span className="font-semibold text-blue-600 dark:text-blue-400">{selectedMentor.name}</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Mentor info pill in header */}
+            <div className="hidden sm:flex items-center space-x-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-2 border border-blue-200 dark:border-blue-800">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                {selectedMentor.name.split(' ').map(n => n[0]).join('')}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{selectedMentor.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{selectedMentor.designation || 'Faculty'}</p>
               </div>
             </div>
           </div>
@@ -298,29 +293,31 @@ export default function ProjectRequestPage() {
       </header>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Progress Steps */}
+        {/* Progress Steps — now 3 steps, all CLICKABLE */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            {[1, 2, 3, 4].map((step) => (
+            {[1, 2, 3].map((step) => (
               <React.Fragment key={step}>
                 <div className="flex flex-col items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-                    currentStep >= step
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-                  }`}>
+                  <button
+                    type="button"
+                    onClick={() => handleStepClick(step)}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900 ${
+                      currentStep >= step
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-md'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                    title={`Go to ${stepLabels[step]}`}
+                  >
                     {step}
-                  </div>
+                  </button>
                   <span className={`text-xs mt-2 font-medium ${
                     currentStep >= step ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
                   }`}>
-                    {step === 1 && 'Select Mentor'}
-                    {step === 2 && 'Project Details'}
-                    {step === 3 && 'Methodology'}
-                    {step === 4 && 'Goals & Timeline'}
+                    {stepLabels[step]}
                   </span>
                 </div>
-                {step < 4 && (
+                {step < totalSteps && (
                   <div className={`flex-1 h-1 mx-4 rounded transition-all ${
                     currentStep > step ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gray-200 dark:bg-gray-700'
                   }`} />
@@ -332,77 +329,8 @@ export default function ProjectRequestPage() {
 
         {/* Form Content */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
-          {/* Step 1: Select Mentor */}
+          {/* Step 1: Project Details */}
           {currentStep === 1 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Select Your Mentor</h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">Choose a faculty member whose expertise aligns with your project interests</p>
-              
-              {errors.mentor && (
-                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg flex items-start space-x-2">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-red-700 dark:text-red-300">{errors.mentor}</span>
-                </div>
-              )}
-
-              {loadingMentors ? (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-                </div>
-              ) : availableMentors.length === 0 ? (
-                <div className="text-center py-12">
-                  <User className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">No mentors available at the moment.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {availableMentors.map((mentor) => (
-                    <div
-                      key={mentor.id}
-                      onClick={() => setSelectedMentor(mentor)}
-                      className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
-                        selectedMentor?.id === mentor.id
-                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-500'
-                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-start space-x-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                            {mentor.name.split(' ').map(n => n[0]).join('')}
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{mentor.name}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{mentor.designation}</p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Currently mentoring {mentor.projects} projects</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          {getCapacityBadge(mentor.capacity)}
-                          {selectedMentor?.id === mentor.id && (
-                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                              <Check className="w-4 h-4 text-white" />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 dark:text-gray-200 mb-3">{mentor.statement}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {mentor.domains.map((domain, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-full">
-                            {domain}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Step 2: Project Details */}
-          {currentStep === 2 && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Project Details</h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6">Provide a clear and concise overview of your project idea</p>
@@ -469,8 +397,8 @@ export default function ProjectRequestPage() {
             </div>
           )}
 
-          {/* Step 3: Methodology & Tech Stack */}
-          {currentStep === 3 && (
+          {/* Step 2: Methodology & Tech Stack */}
+          {currentStep === 2 && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Methodology & Technology</h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6">Explain your approach and the technologies you'll use</p>
@@ -536,8 +464,8 @@ export default function ProjectRequestPage() {
             </div>
           )}
 
-          {/* Step 4: Goals & Timeline */}
-          {currentStep === 4 && (
+          {/* Step 3: Goals & Timeline */}
+          {currentStep === 3 && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Objectives & Timeline</h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6">Define clear goals and expected outcomes</p>
@@ -648,18 +576,13 @@ export default function ProjectRequestPage() {
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <button
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              className={`px-6 py-3 font-medium rounded-lg transition-all ${
-                currentStep === 1
-                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
+              onClick={currentStep === 1 ? () => navigate('/student-landing-page') : handleBack}
+              className="px-6 py-3 font-medium rounded-lg transition-all bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
             >
-              Back
+              {currentStep === 1 ? 'Cancel' : 'Back'}
             </button>
             
-            {currentStep < 4 ? (
+            {currentStep < totalSteps ? (
               <button
                 onClick={handleNext}
                 className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"

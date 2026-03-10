@@ -300,46 +300,60 @@ export default function MentorConnectDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-lg">
-                <GraduationCap className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">MentorConnect</h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Find your perfect mentor</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {/* Notification Bell */}
-              <NotificationBell />
-              
-              <button 
-                onClick={() => navigate('/student-profile-page')}
-                className="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all"
-              >
-                My Profile
-              </button>
-              <div className="flex items-center space-x-3">
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    {loadingProfile ? '...' : studentProfile?.name || 'Student'}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {loadingProfile ? '...' : studentProfile?.id || 'N/A'}
-                  </p>
-                </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  {(studentProfile?.name || 'S').split(' ').map(n => n[0]).join('')}
-                </div>
-              </div>
-            </div>
+  {/* Header */}
+  <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="flex items-center justify-between">
+        
+        <div className="flex items-center space-x-3">
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-lg">
+            <GraduationCap className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              MentorConnect
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Find your perfect mentor
+            </p>
           </div>
         </div>
-      </header>
+
+        <div className="flex items-center space-x-4">
+  
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
+          {/* Notification Bell */}
+          <NotificationBell />
+
+          <div className="flex items-center space-x-3">
+            
+            <div className="text-right">
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                {loadingProfile ? '...' : studentProfile?.name || 'Student'}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {loadingProfile ? '...' : studentProfile?.id || 'N/A'}
+              </p>
+            </div>
+
+            {/* Clickable Avatar */}
+            <div
+              onClick={() => navigate('/student-profile-page')}
+              className="w-10 h-10 cursor-pointer bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold hover:scale-105 transition"
+            >
+              {(studentProfile?.name || 'S')
+                .split(' ')
+                .map(n => n[0])
+                .join('')}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
