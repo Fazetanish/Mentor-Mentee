@@ -30,7 +30,7 @@ const Project_Requests = new Schema({
     status: { 
         type: String, 
         required: true, 
-        enum: ["pending", "approved", "rejected", "changes_requested"], 
+        enum: ["pending", "approved", "rejected", "changes_requested", "cancelled"], 
         default: "pending" 
     },
     

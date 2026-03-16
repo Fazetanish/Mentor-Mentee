@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, User, BookOpen, Code, Target, FileText, Upload, X, Check, AlertCircle, Plus, Loader2 } from 'lucide-react';
+import { ArrowLeft, User, BookOpen, Code, Target, FileText, Upload, X, Check, AlertCircle, Plus, Loader2, Lock } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -12,6 +12,8 @@ export default function ProjectRequestPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [hasApprovedRequest, setHasApprovedRequest] = useState(false);
+  const [checkingApproval, setCheckingApproval] = useState(true);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -56,6 +58,22 @@ export default function ProjectRequestPage() {
       // No mentor selected — redirect back to the landing page
       navigate('/student-landing-page');
     }
+
+    // Check if student already has an approved request
+    const checkApprovedRequest = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/project/requests/student`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const requests = response.data.requests || [];
+        setHasApprovedRequest(requests.some(r => r.status === 'approved'));
+      } catch (err) {
+        console.error('Error checking approved requests:', err);
+      } finally {
+        setCheckingApproval(false);
+      }
+    };
+    checkApprovedRequest();
   }, [navigate, location.state]);
 
   const totalSteps = 3;
@@ -249,10 +267,33 @@ export default function ProjectRequestPage() {
   }
 
   // Don't render form until mentor is loaded
-  if (!selectedMentor) {
+  if (!selectedMentor || checkingApproval) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center">
         <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+      </div>
+    );
+  }
+
+  // Block the form if student already has an approved request
+  if (hasApprovedRequest) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Requests Locked</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
+            You already have an approved mentor. You cannot send any more project requests.
+          </p>
+          <button
+            onClick={() => navigate('/student-landing-page')}
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"
+          >
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     );
   }

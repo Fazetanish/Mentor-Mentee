@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin, Loader2 } from 'lucide-react';
+import { Search, Filter, BookOpen, Users, CheckCircle, Clock, XCircle, Plus, GraduationCap, Mail, Github, Linkedin, Loader2, Lock, Slash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ThemeToggle from './ThemeToggle';
@@ -172,7 +172,7 @@ export default function MentorConnectDashboard() {
           const normalizedDomains = normalizeMentorDomains(rawDomains);
           
           return {
-            id: mentor._id,
+            id: mentor.user_id?._id || mentor._id,
             name: mentor.user_id?.name || 'Unknown',
             designation: mentor.designation || 'Faculty',
             domains: normalizedDomains,
@@ -229,12 +229,16 @@ export default function MentorConnectDashboard() {
     fetchAvailableMentors();
   }, [navigate]);
 
+  // Derive whether the student already has an approved request
+  const hasApprovedRequest = mentorRequests.some(r => r.status === 'approved');
+
   const getStatusColor = (status) => {
     switch(status) {
       case 'approved': return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/30';
       case 'pending': return 'text-yellow-600 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-900/30';
       case 'rejected': return 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/30';
       case 'changes_requested': return 'text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-900/30';
+      case 'cancelled': return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-700/50';
       default: return 'text-gray-600 bg-gray-50 dark:text-gray-300 dark:bg-gray-800';
     }
   };
@@ -245,6 +249,7 @@ export default function MentorConnectDashboard() {
       case 'pending': return <Clock className="w-4 h-4" />;
       case 'rejected': return <XCircle className="w-4 h-4" />;
       case 'changes_requested': return <Mail className="w-4 h-4" />;
+      case 'cancelled': return <Slash className="w-4 h-4" />;
       default: return <Clock className="w-4 h-4" />;
     }
   };
@@ -549,17 +554,28 @@ export default function MentorConnectDashboard() {
                         </div>
                         <div className="flex items-center space-x-3">
                           {getCapacityBadge(mentor.capacity)}
-                          <button
-                            disabled={mentor.capacity === 'full'}
-                            onClick={() => navigate('/project-request', { state: { selectedMentor: mentor } })}
-                            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                              mentor.capacity === 'full'
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
-                                : 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
-                            }`}
-                          >
-                            Send Request
-                          </button>
+                          <div className="relative group">
+                            <button
+                              disabled={mentor.capacity === 'full' || hasApprovedRequest}
+                              onClick={() => navigate('/project-request', { state: { selectedMentor: mentor } })}
+                              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center space-x-1.5 ${
+                                hasApprovedRequest
+                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
+                                  : mentor.capacity === 'full'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
+                                    : 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
+                              }`}
+                            >
+                              {hasApprovedRequest && <Lock className="w-3.5 h-3.5" />}
+                              <span>{hasApprovedRequest ? 'Request Locked' : 'Send Request'}</span>
+                            </button>
+                            {hasApprovedRequest && (
+                              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
+                                You already have an approved mentor. No more requests can be sent.
+                                <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="mb-3">
