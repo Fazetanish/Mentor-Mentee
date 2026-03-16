@@ -58,6 +58,18 @@ ProjectRouter.post("/request", authJWTMiddleware, async function(req, res) {
             });
         }
 
+        // Check if student already has an approved request (locked)
+        const approvedRequest = await Project_Request_Model.findOne({
+            student_id: req.user.id,
+            status: "approved"
+        });
+
+        if (approvedRequest) {
+            return res.status(403).json({
+                message: "You already have an approved mentor. You cannot send new requests."
+            });
+        }
+
         // Check for existing pending request to the same mentor
         const existingRequest = await Project_Request_Model.findOne({
             student_id: req.user.id,
@@ -262,6 +274,51 @@ ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req
         // Get mentor name for notification
         const mentor = await UserModel.findById(req.user.id);
         const mentorName = mentor?.name || 'Your mentor';
+
+        // ──────────────────────────────────────────────
+        //  AUTO-CANCEL other requests when one is approved
+        // ──────────────────────────────────────────────
+        if (status === 'approved') {
+            // Find all other pending/changes_requested requests from this student
+            const otherRequests = await Project_Request_Model.find({
+                student_id: request.student_id,
+                _id: { $ne: request._id },
+                status: { $in: ['pending', 'changes_requested'] }
+            }).populate('mentor_id', 'name');
+
+            // Cancel them all
+            await Project_Request_Model.updateMany(
+                {
+                    student_id: request.student_id,
+                    _id: { $ne: request._id },
+                    status: { $in: ['pending', 'changes_requested'] }
+                },
+                {
+                    $set: {
+                        status: 'cancelled',
+                        mentorFeedback: 'Auto-cancelled: another project request was approved.',
+                        respondedAt: new Date()
+                    }
+                }
+            );
+
+            // Send a notification for each cancelled request
+            const cancelNotifications = otherRequests.map(otherReq => ({
+                user_id: request.student_id,
+                type: 'request_cancelled',
+                title: '🚫 Request Auto-Cancelled',
+                message: `Your request "${otherReq.projectTitle}" to ${otherReq.mentor_id?.name || 'a mentor'} has been automatically cancelled because your project with ${mentorName} was approved.`,
+                data: {
+                    request_id: otherReq._id,
+                    project_title: otherReq.projectTitle,
+                    reason: 'auto_cancelled_on_approval'
+                }
+            }));
+
+            if (cancelNotifications.length > 0) {
+                await NotificationModel.insertMany(cancelNotifications);
+            }
+        }
 
         // Create notification for the student
         let notificationType, notificationTitle, notificationMessage;
