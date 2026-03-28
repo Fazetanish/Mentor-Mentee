@@ -3,7 +3,7 @@ import { Bell, CheckCircle, XCircle, MessageSquare, X, Loader2 } from 'lucide-re
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
@@ -170,22 +170,20 @@ export default function NotificationBell() {
                     }
                     setIsOpen(false);
                   }}
-                  className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-l-4 ${
-                    notification.read
+                  className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-l-4 ${notification.read
                       ? 'border-transparent bg-white dark:bg-gray-800'
                       : 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0">
                       {getNotificationIcon(notification.type)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium truncate ${
-                        notification.read
+                      <p className={`text-sm font-medium truncate ${notification.read
                           ? 'text-gray-700 dark:text-gray-300'
                           : 'text-gray-900 dark:text-gray-100'
-                      }`}>
+                        }`}>
                         {notification.title}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">

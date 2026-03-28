@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {z} from 'zod';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 const requiredBody = z.object({
   fullName : z.string().min(2).max(50),
   email : z.email("Invalid email format").refine(
@@ -66,7 +68,7 @@ export default function SignUpPage() {
 
     setIsSendingOtp(true);
     try {
-      await axios.post("http://localhost:3000/user/send-otp", {
+      await axios.post(`${API_BASE_URL}/user/send-otp`, {
         email: formData.email
       });
       
@@ -138,7 +140,7 @@ export default function SignUpPage() {
     setOtpError('');
     
     try {
-      const response = await axios.post("http://localhost:3000/user/verify-otp", {
+      const response = await axios.post(`${API_BASE_URL}/user/verify-otp`, {
         email: formData.email,
         otp: otpString
       });
@@ -181,7 +183,7 @@ export default function SignUpPage() {
     try {
       // 1️⃣ SIGNUP
       const signupRes = await axios.post(
-        "http://localhost:3000/user/signup",
+        `${API_BASE_URL}/user/signup`,
         {
           name: formData.fullName,
           email: formData.email,
@@ -194,7 +196,7 @@ export default function SignUpPage() {
 
       // 2️⃣ AUTO SIGNIN
       const signinRes = await axios.post(
-        "http://localhost:3000/user/signin",
+        `${API_BASE_URL}/user/signin`,
         {
           email: formData.email,
           password: formData.password

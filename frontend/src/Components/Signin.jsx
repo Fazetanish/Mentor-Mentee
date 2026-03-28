@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {z} from 'zod';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 const requiredBody = z.object({
   email: z.email("Invalid email format").refine(
       (email) =>
@@ -36,7 +38,7 @@ export default function SignInPage() {
     }
 
     try {
-      const res = await axios.post("http://localhost:3000/user/signin", {
+      const res = await axios.post(`${API_BASE_URL}/user/signin`, {
         email,
         password
       });

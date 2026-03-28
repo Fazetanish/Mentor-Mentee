@@ -3,6 +3,8 @@ import { User, Hash, Calendar, BookOpen, Award, Lightbulb, X, Plus } from 'lucid
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 
 export default function StudentProfileForm() {
   const [formData, setFormData] = useState({
@@ -92,7 +94,7 @@ export default function StudentProfileForm() {
     try {
       console.log('Student profile data:', formData);
       const token = localStorage.getItem('authToken'); // or wherever you store the JWT
-      const res = await axios.post("http://localhost:3000/user/student/profile", {
+      const res = await axios.post(`${API_BASE_URL}/user/student/profile`, {
           ...formData,
           year: parseInt(formData.year),
           semester: parseInt(formData.semester),

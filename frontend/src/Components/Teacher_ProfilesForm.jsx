@@ -3,6 +3,8 @@ import { User, Briefcase, Users, Lightbulb, Award, X, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
 export default function TeacherProfileForm() {
   const [formData, setFormData] = useState({
     designation: '',
@@ -73,7 +75,7 @@ export default function TeacherProfileForm() {
     try {
       console.log('Teacher profile data:', formData);
       const token = localStorage.getItem('authToken');
-      const res = await axios.post("http://localhost:3000/teacher/profile",{
+      const res = await axios.post(`${API_BASE_URL}/teacher/profile`,{
         ...formData
       }, {
         headers: {

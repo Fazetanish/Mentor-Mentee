@@ -5,7 +5,7 @@ import axios from 'axios';
 import ThemeToggle from './ThemeToggle';
 import NotificationBell from './NotificationBell';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 /**
  * Normalizes a domain string to Title Case for consistent display and comparison

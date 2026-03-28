@@ -3,7 +3,7 @@ import { ArrowLeft, User, BookOpen, Code, Target, FileText, Upload, X, Check, Al
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 export default function ProjectRequestPage() {
   // Steps are now 1=Project Details, 2=Methodology, 3=Goals & Timeline
