@@ -758,7 +758,7 @@ export default function TeacherLandingPage() {
                           )}
                           {request.status !== 'pending' && (
                             <button 
-                              onClick={() => navigate(`/request-details/${request.id}`)}
+                              onClick={() => navigate(`/teacher/request-details/${request.id}`)}
                               className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                             >
                               View Details
@@ -806,7 +806,7 @@ export default function TeacherLandingPage() {
                           </p>
                         </div>
                         <button 
-                          onClick={() => navigate(`/request-details/${project.id}`)}
+                          onClick={() => navigate(`/teacher/request-details/${project.id}`)}
                           className="px-4 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
                         >
                           View Details

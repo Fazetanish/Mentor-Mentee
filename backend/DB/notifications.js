@@ -7,7 +7,7 @@ const NotificationSchema = new Schema({
     type: { 
         type: String, 
         required: true, 
-        enum: ['request_approved', 'request_rejected', 'request_changes', 'general']
+        enum: ['request_approved', 'request_rejected', 'request_changes', 'request_cancelled', 'general']
     },
     title: { type: String, required: true },
     message: { type: String, required: true },

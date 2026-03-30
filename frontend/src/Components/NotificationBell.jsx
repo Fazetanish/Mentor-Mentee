@@ -107,6 +107,8 @@ export default function NotificationBell() {
         return <XCircle className="w-5 h-5 text-red-500" />;
       case 'request_changes':
         return <MessageSquare className="w-5 h-5 text-orange-500" />;
+      case 'request_cancelled':
+        return <XCircle className="w-5 h-5 text-gray-500" />;
       default:
         return <Bell className="w-5 h-5 text-blue-500" />;
     }

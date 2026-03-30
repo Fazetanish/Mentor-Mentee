@@ -279,44 +279,49 @@ ProjectRouter.patch("/request/:requestId", authJWTMiddleware, async function(req
         //  AUTO-CANCEL other requests when one is approved
         // ──────────────────────────────────────────────
         if (status === 'approved') {
-            // Find all other pending/changes_requested requests from this student
-            const otherRequests = await Project_Request_Model.find({
-                student_id: request.student_id,
-                _id: { $ne: request._id },
-                status: { $in: ['pending', 'changes_requested'] }
-            }).populate('mentor_id', 'name');
-
-            // Cancel them all
-            await Project_Request_Model.updateMany(
-                {
+            try {
+                // Find all other pending/changes_requested requests from this student
+                const otherRequests = await Project_Request_Model.find({
                     student_id: request.student_id,
                     _id: { $ne: request._id },
                     status: { $in: ['pending', 'changes_requested'] }
-                },
-                {
-                    $set: {
-                        status: 'cancelled',
-                        mentorFeedback: 'Auto-cancelled: another project request was approved.',
-                        respondedAt: new Date()
+                }).populate('mentor_id', 'name');
+
+                // Cancel them all
+                await Project_Request_Model.updateMany(
+                    {
+                        student_id: request.student_id,
+                        _id: { $ne: request._id },
+                        status: { $in: ['pending', 'changes_requested'] }
+                    },
+                    {
+                        $set: {
+                            status: 'cancelled',
+                            mentorFeedback: 'Auto-cancelled: another project request was approved.',
+                            respondedAt: new Date()
+                        }
                     }
-                }
-            );
+                );
 
-            // Send a notification for each cancelled request
-            const cancelNotifications = otherRequests.map(otherReq => ({
-                user_id: request.student_id,
-                type: 'request_cancelled',
-                title: '🚫 Request Auto-Cancelled',
-                message: `Your request "${otherReq.projectTitle}" to ${otherReq.mentor_id?.name || 'a mentor'} has been automatically cancelled because your project with ${mentorName} was approved.`,
-                data: {
-                    request_id: otherReq._id,
-                    project_title: otherReq.projectTitle,
-                    reason: 'auto_cancelled_on_approval'
-                }
-            }));
+                // Send a notification for each cancelled request
+                const cancelNotifications = otherRequests.map(otherReq => ({
+                    user_id: request.student_id,
+                    type: 'request_cancelled',
+                    title: '🚫 Request Auto-Cancelled',
+                    message: `Your request "${otherReq.projectTitle}" to ${otherReq.mentor_id?.name || 'a mentor'} has been automatically cancelled because your project with ${mentorName} was approved.`,
+                    data: {
+                        request_id: otherReq._id,
+                        project_title: otherReq.projectTitle,
+                        feedback: 'Auto-cancelled: another project request was approved.'
+                    }
+                }));
 
-            if (cancelNotifications.length > 0) {
-                await NotificationModel.insertMany(cancelNotifications);
+                if (cancelNotifications.length > 0) {
+                    await NotificationModel.insertMany(cancelNotifications);
+                }
+            } catch (cancelError) {
+                // Log but don't crash — the main notification & email must still go through
+                console.error('Error during auto-cancel (non-blocking):', cancelError.message);
             }
         }
 

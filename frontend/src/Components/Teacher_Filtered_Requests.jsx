@@ -636,7 +636,7 @@ export default function FilteredRequestsPage() {
                         )}
                         {request.status !== 'pending' && (
                           <button 
-                            onClick={() => navigate(`/request-details/${request.id}`)}
+                            onClick={() => navigate(`/teacher/request-details/${request.id}`)}
                             className="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                           >
                             View Details

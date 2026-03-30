@@ -140,6 +140,8 @@ export default function StudentNotifications() {
         return <XCircle className="w-6 h-6 text-red-500" />;
       case 'request_changes':
         return <MessageSquare className="w-6 h-6 text-orange-500" />;
+      case 'request_cancelled':
+        return <XCircle className="w-6 h-6 text-gray-500" />;
       default:
         return <Bell className="w-6 h-6 text-blue-500" />;
     }
@@ -155,6 +157,8 @@ export default function StudentNotifications() {
         return 'bg-red-50 dark:bg-red-900/20';
       case 'request_changes':
         return 'bg-orange-50 dark:bg-orange-900/20';
+      case 'request_cancelled':
+        return 'bg-gray-50 dark:bg-gray-900/20';
       default:
         return 'bg-blue-50 dark:bg-blue-900/20';
     }
