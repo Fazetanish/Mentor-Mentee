@@ -368,7 +368,7 @@ export default function MentorConnectDashboard() {
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Active Requests</p>
                 <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                  {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : mentorRequests.filter(r => r.status === 'pending').length}
+                  {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : mentorRequests.filter(r => ['pending', 'changes_requested'].includes(r.status)).length}
                 </p>
               </div>
               <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-lg">
@@ -474,7 +474,7 @@ export default function MentorConnectDashboard() {
               >
                 Browse Mentors
               </button>
-              <button
+                  <button
                 onClick={() => setActiveTab('requests')}
                 className={`py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'requests'
@@ -484,7 +484,7 @@ export default function MentorConnectDashboard() {
               >
                 My Requests
                 <span className="ml-2 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-xs font-semibold rounded-full">
-                  {mentorRequests.filter(r => r.status === 'pending').length}
+                  {mentorRequests.filter(r => ['pending', 'changes_requested'].includes(r.status)).length}
                 </span>
               </button>
             </div>
