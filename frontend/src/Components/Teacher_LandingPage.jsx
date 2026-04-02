@@ -426,10 +426,10 @@ export default function TeacherLandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
-              <div>
+                <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Pending Requests</p>
                 <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                  {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : incomingRequests.filter(r => r.status === 'pending').length}
+                  {loadingRequests ? <Loader2 className="w-6 h-6 animate-spin" /> : incomingRequests.filter(r => ['pending', 'changes_requested'].includes(r.status)).length}
                 </p>
               </div>
               <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-lg">
@@ -530,7 +530,7 @@ export default function TeacherLandingPage() {
               >
                 Incoming Requests
                 <span className="ml-2 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-xs font-semibold rounded-full">
-                  {incomingRequests.filter(r => r.status === 'pending').length}
+                  {incomingRequests.filter(r => ['pending', 'changes_requested'].includes(r.status)).length}
                 </span>
               </button>
               <button
