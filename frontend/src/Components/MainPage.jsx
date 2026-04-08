@@ -1,25 +1,35 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, FileText, CheckCircle, BarChart3, ArrowRight } from 'lucide-react';
 
 export default function MainPage() {
+  const navigate = useNavigate();
+
+  const handleLearnMore = () => {
+    const section = document.getElementById('features');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const features = [
     {
-      icon: <Users className="w-8 h-8" />,
+      icon: <Users className="w-8 h-8" />, 
       title: "Browse & Discover",
       description: "Explore faculty profiles filtered by expertise and availability. Connect with the perfect mentor for your research goals."
     },
     {
-      icon: <FileText className="w-8 h-8" />,
+      icon: <FileText className="w-8 h-8" />, 
       title: "Structured Proposals",
       description: "Submit detailed project proposals with clear objectives, methodology, and outcomes to ensure meaningful mentorship."
     },
     {
-      icon: <CheckCircle className="w-8 h-8" />,
+      icon: <CheckCircle className="w-8 h-8" />, 
       title: "Request Management",
       description: "Faculty can review, approve, or request changes. Students track their applications in real-time with notifications."
     },
     {
-      icon: <BarChart3 className="w-8 h-8" />,
+      icon: <BarChart3 className="w-8 h-8" />, 
       title: "Admin Analytics",
       description: "Department coordinators gain insights into mentorship distribution, project domains, and success metrics."
     }
@@ -69,10 +79,18 @@ export default function MainPage() {
             to foster meaningful research collaborations through structured project proposals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center">
+            <button
+              type="button"
+              onClick={() => navigate('/signup')}
+              className="bg-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center"
+            >
               Get Started <ArrowRight className="ml-2 w-5 h-5" />
             </button>
-            <button className="bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-50 dark:hover:bg-gray-700 transition">
+            <button
+              type="button"
+              onClick={handleLearnMore}
+              className="bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-50 dark:hover:bg-gray-700 transition"
+            >
               Learn More
             </button>
           </div>
