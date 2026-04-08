@@ -25,8 +25,10 @@ A comprehensive web application that connects students with faculty mentors at M
 -  **Email Notifications** - OTP verification via Gmail SMTP
 
 ---
-#LIVE DEPLOYMENT LINK
--**https://tanishi.online/
+## Live Deployment
+
+Check out the live version of the project here:  
+🔗 https://tanishi.online/
 
 ---
 
