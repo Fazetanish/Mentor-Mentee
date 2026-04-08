@@ -4,6 +4,7 @@ import Dashboard from './Components/Dashboard'
 import SignInPage from './Components/Signin'
 import SignUpPage from './Components/Signup'
 import { BrowserRouter as Router , Routes , Route } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import StudentProfileForm from './Components/Student_ProfilesForm'
 import MentorConnectDashboard from './Components/Student_LandingPage'
 import ProjectRequestPage from './Components/Requests'
@@ -19,7 +20,7 @@ import ProtectedRoute from './Components/ProtectedRoute'
 
 function App(){
   return <>
-    <Router>
+    <Router basename="/Mentor-Mentee">
       <Routes>
         {/* Public routes */}
         <Route path='/' element = {<Dashboard />} />
